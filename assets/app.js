@@ -30,3 +30,6 @@ import './js/ace-elements.min.js';
 import './js/ace.min.js';
 
 import './bootstrap';
+
+import './jslib/jslib.main';
+import './jslib/load.user';

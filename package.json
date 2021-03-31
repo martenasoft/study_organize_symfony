@@ -6,6 +6,9 @@
         "file-loader": "^6.0.0",
         "regenerator-runtime": "^0.13.2",
         "stimulus": "^2.0.0",
+        "vue": "^2.5",
+        "vue-loader": "^15.9.5",
+        "vue-template-compiler": "^2.6.12",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -17,6 +20,8 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "jquery": "2.1.4"
+        "axios": "^0.21.1",
+        "jquery": "2.1.4",
+        "vuejs": "^3.0.1"
     }
 }

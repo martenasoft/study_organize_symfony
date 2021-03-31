@@ -45,7 +45,9 @@
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" id="login-username" class="form-control" placeholder="Username" />
+                                                        {#{% verbatim %}#}
+															<input v-model="loginForm.username" type="text" id="login-username" class="form-control" placeholder="Username" />
+														{#{% endverbatim %}#}
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                                             </label>
@@ -65,7 +67,7 @@
                                                     <span class="lbl"> Remember Me</span>
                                                 </label>
 
-                                                <button onclick="window.userLogin(this, document.getElementById('login-username').value, document.getElementById('login-password').value);" type="button" class="width-35 pull-right btn btn-sm btn-primary">
+                                                <button v-on:click="submitForm()" type="button" class="width-35 pull-right btn btn-sm btn-primary">
                                                     <i class="ace-icon fa fa-key"></i>
                                                     <span class="bigger-110">Login</span>
                                                 </button>
@@ -96,7 +98,7 @@
                                     </div>
                                 </div><!-- /.widget-main -->
 
-                                <div class="toolbar clearfix">
+                                <vdiv class="toolbar clearfix">
                                     <div>
                                         <a href="#" data-target="#forgot-box" class="forgot-password-link">
                                             <i class="ace-icon fa fa-arrow-left"></i>
@@ -105,12 +107,12 @@
                                     </div>
 
                                     <div>
-                                        <a href="#" data-target="#signup-box" class="user-signup-link">
+                                        <a href="#" v-on:click="showRegisterForm();" data-target="#signup-box" class="user-signup-link">
                                             I want to register
                                             <i class="ace-icon fa fa-arrow-right"></i>
                                         </a>
                                     </div>
-                                </div>
+                                </vdiv>
                             </div><!-- /.widget-body -->
                         </div><!-- /.login-box -->
 
@@ -155,7 +157,7 @@
                             </div><!-- /.widget-body -->
                         </div><!-- /.forgot-box -->
 
-                        <div id="signup-box" class="signup-box widget-box no-border">
+                        <div id="signup-box" v-show="visible" class="signup-box widget-box no-border">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header green lighter bigger">
@@ -246,13 +248,14 @@
                         <a id="btn-login-light" href="#">Light</a>
                         &nbsp; &nbsp; &nbsp;
                     </div>
+
                 </div>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.main-content -->
 </div><!-- /.main-container -->
 {% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
+
 {% endblock %}
 </body>
 

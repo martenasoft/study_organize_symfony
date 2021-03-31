@@ -15,6 +15,9 @@ import './css/ace-rtl.min.css';
 
 import './styles/app.css';
 
+import Vue from 'vue';
+import axios from "axios";
+
 const $ = require('jquery');
 // start the Stimulus application
 
@@ -31,5 +34,33 @@ import './js/ace.min.js';
 
 import './bootstrap';
 
-import './jslib/jslib.main';
-import './jslib/load.user';
+
+import './vue/user.login';
+
+
+var signupBox = new Vue({
+    el: '#signup-box',
+    data: {
+        visible: true
+    }
+});
+
+var loginBox = new Vue({
+    el: '#login-box',
+    methods: {
+        submitForm: function () {
+            console.log(this.$data.loginForm);
+       //     axios.post('http://127.0.0.1:88002', {'usernamr':'1212'})
+        },
+        showRegisterForm: function () {
+            this.
+            alert(23);
+        }
+    },
+    data: {
+        loginForm: {
+            username : 'test11@user.com'
+        }
+
+    }
+})

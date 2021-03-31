@@ -79,7 +79,7 @@ Encore
 
     .cleanupOutputBeforeBuild()
     .autoProvidejQuery()
-    .enableVueLoader()
+    .enableVueLoader(() => {}, { runtimeCompilerBuild: true })
 ;
 
 module.exports = Encore.getWebpackConfig();

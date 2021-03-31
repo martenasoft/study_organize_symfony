@@ -11,6 +11,10 @@
     {% block javascripts_top %}
         {{ encore_entry_script_tags('jstop') }}
     {% endblock %}
+
+    <script>
+
+    </script>
 </head>
 
 <body class="login-layout">
@@ -31,16 +35,14 @@
                     <div class="space-6"></div>
 
                     <div class="position-relative">
-                        <div id="login-box" class="login-box visible widget-box no-border">
+                        <div id="login-box" :class="visible" class="login-box widget-box no-border">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header blue lighter bigger">
                                         <i class="ace-icon fa fa-coffee green"></i>
                                         Please Enter Your Information
                                     </h4>
-
                                     <div class="space-6"></div>
-
                                     <form>
                                         <fieldset>
                                             <label class="block clearfix">
@@ -105,9 +107,8 @@
                                             I forgot my password
                                         </a>
                                     </div>
-
                                     <div>
-                                        <a href="#" v-on:click="showRegisterForm();" data-target="#signup-box" class="user-signup-link">
+                                        <a href="#" v-on:click="showRegisterForm()" class="user-signup-link">
                                             I want to register
                                             <i class="ace-icon fa fa-arrow-right"></i>
                                         </a>
@@ -157,43 +158,34 @@
                             </div><!-- /.widget-body -->
                         </div><!-- /.forgot-box -->
 
-                        <div id="signup-box" v-show="visible" class="signup-box widget-box no-border">
+                        <div id="signup-box" :class="visible"  class="signup-box widget-box no-border">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header green lighter bigger">
                                         <i class="ace-icon fa fa-users blue"></i>
                                         New User Registration
                                     </h4>
-
                                     <div class="space-6"></div>
                                     <p> Enter your details to begin: </p>
-
                                     <form>
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="email" class="form-control" placeholder="Email" />
+															<input type="email" v-model="email" class="form-control" placeholder="Email" />
 															<i class="ace-icon fa fa-envelope"></i>
 														</span>
                                             </label>
 
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control" placeholder="Username" />
-															<i class="ace-icon fa fa-user"></i>
-														</span>
-                                            </label>
-
-                                            <label class="block clearfix">
-														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Password" />
+															<input type="password" v-model="password" class="form-control" placeholder="Password" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                                             </label>
 
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Repeat password" />
+															<input type="password" v-model="confirmPassword" class="form-control" placeholder="Repeat password" />
 															<i class="ace-icon fa fa-retweet"></i>
 														</span>
                                             </label>
@@ -214,7 +206,7 @@
                                                     <span class="bigger-110">Reset</span>
                                                 </button>
 
-                                                <button type="button" class="width-65 pull-right btn btn-sm btn-success">
+                                                <button v-on:click="submitForm()" type="button" class="width-65 pull-right btn btn-sm btn-success">
                                                     <span class="bigger-110">Register</span>
 
                                                     <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
@@ -255,7 +247,7 @@
     </div><!-- /.main-content -->
 </div><!-- /.main-container -->
 {% block javascripts %}
-
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
 </body>
 

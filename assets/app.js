@@ -7,28 +7,21 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 
-
-
-
-/*
 import './css/bootstrap.min.css';
 import './font-awesome/4.5.0/css/font-awesome.min.css';
 import './css/fonts.googleapis.com.css';
 import './css/ace.min.css';
 import './css/ace-skins.min.css';
 import './css/ace-rtl.min.css';
+import './css/jquery-ui.custom.min.css';
+import './css/fullcalendar.min.css';
 
-import './styles/app.css';
+import './js/bootstrap.min';
+import './js/jquery-ui.custom.min';
+import './js/jquery.ui.touch-punch.min';
+//import './js/moment.min.js;
 
-import Vue from 'vue';
-import axios from "axios";
-
-const $ = require('jquery');
-// start the Stimulus application
-
-import './js/bootstrap.min.js';
-import './js/jquery-ui.custom.min.js';
-import './js/jquery.ui.touch-punch.min.js';
+import './js/bootbox';
 import './js/jquery.easypiechart.min.js';
 import './js/jquery.sparkline.index.min.js';
 import './js/jquery.flot.min.js';
@@ -36,36 +29,64 @@ import './js/jquery.flot.pie.min.js';
 import './js/jquery.flot.resize.min.js';
 import './js/ace-elements.min.js';
 import './js/ace.min.js';
-*/
-
-import './css/bootstrap.min.css';
-import './font-awesome/4.5.0/css/font-awesome.min.css';
-import './css/fonts.googleapis.com.css';
-import './css/ace.min.css';
-import './css/ace-skins.min.css';
-import './css/ace-rtl.min.css';
 
 import './bootstrap';
 
-import Login from "./src/components/Login";
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueBodyClass from 'vue-body-class';
+import VueResource from 'vue-resource';
+import Vuex from "vuex";
+
 import App from './src/App';
+import Login from "./src/components/Login";
+import Calendar from "./src/components/Calendar";
 
 
-Vue.config.productionTip = false
+Vue.use(VueResource);
 Vue.use(VueRouter);
+Vue.use(Vuex);
+
+Vue.config.productionTip = false;
+Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
 
 const routes = [
-    {path: '/user-login', component: Login}
+    {
+        name: 'Login',
+        path: '/user-login',
+        component: Login,
+        meta: { bodyClass: 'login-layout' }
+    },
+    {
+        name: 'FullCalendar',
+        path: '/calendar',
+        component: Calendar
+    }
 ];
 
 const router = new VueRouter({
     routes
 });
 
+const vueBodyClass = new VueBodyClass(routes);
+router.beforeEach((to, from, next) => { vueBodyClass.guard(to, next) });
+
+const store = new Vuex.Store({
+    state: {
+        user: null
+    },
+
+    mutations: {
+        getUser () {
+            state.user = {id: 2, username: 'Vuex'}
+        }
+    }
+});
+
+
 new Vue({
     router,
+    store,
     render: h =>h(App)
 }).$mount('#app');
 

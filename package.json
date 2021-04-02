@@ -20,6 +20,9 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fullcalendar/daygrid": "^5.6.0",
+        "@fullcalendar/interaction": "^5.6.0",
+        "@fullcalendar/vue": "^5.6.0",
         "axios": "^0.21.1",
         "jquery": "2.1.4",
         "moment": "^2.29.1",

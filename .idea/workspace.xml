@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="889089cb-c26b-42a2-af5f-459826fcfa7d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/src/auth/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/src/components/Calendar.vue" afterDir="false" />
+    <list default="true" id="74a42735-7de7-40d4-858e-0c8705eeac2b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/assets/src/components/Timeline.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/components/TimelineBlock.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/components/TimelineBlockItem.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/src/components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/components/Calendar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>

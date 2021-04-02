@@ -19,7 +19,6 @@ import './css/fullcalendar.min.css';
 import './js/bootstrap.min';
 import './js/jquery-ui.custom.min';
 import './js/jquery.ui.touch-punch.min';
-//import './js/moment.min.js;
 
 import './js/bootbox';
 import './js/jquery.easypiechart.min.js';
@@ -41,7 +40,7 @@ import Vuex from "vuex";
 import App from './src/App';
 import Login from "./src/components/Login";
 import Calendar from "./src/components/Calendar";
-
+import Timeline from "./src/components/Timeline";
 
 Vue.use(VueResource);
 Vue.use(VueRouter);
@@ -56,6 +55,11 @@ const routes = [
         path: '/user-login',
         component: Login,
         meta: { bodyClass: 'login-layout' }
+    },
+    {
+        name: 'Timeline',
+        path: '/timeline',
+        component: Timeline
     },
     {
         name: 'FullCalendar',

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <Navbar
       v-bind:user="user"
     />
@@ -10,30 +11,29 @@
   </div>
 </template>
 <script>
-
-
 import Navbar from "./components/Navbar";
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "app",
-  created() {
+  computed: mapGetters(["user"]),
+  methods: mapActions(["fetchUser"]),
 
-   // console.log(this.$store.state.user)
-    //getUser();
-    //console.log({ddd:this.user});
-   // this.$router.push({ name: 'Login' });
-  },
-  data() {
-    return {
-        user: {id: 1}
-      }
-  },
-  methods: {
-    getUser: function () {
-      this.$store.commit('getUser');
-      console.log(this.$store.state.user);
+
+  mounted() {
+    if (this.user === null) {
+//      this.fetchUser();
     }
+
+   /* if (this.user === null) {
+      this.$route.push('Login');
+    }
+*/
+
   },
+
+
+
   components: {Navbar}
 }
 </script>

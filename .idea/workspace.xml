@@ -2,13 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74a42735-7de7-40d4-858e-0c8705eeac2b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/src/components/Timeline.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/src/components/TimelineBlock.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/src/components/TimelineBlockItem.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/config/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/router/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/store/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/store/modules/post.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/src/store/modules/userSore.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/components/Calendar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/src/auth/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/assets/src/components/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="Vue Single File Component" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -152,6 +157,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -163,6 +169,9 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/vue" />
     </key>

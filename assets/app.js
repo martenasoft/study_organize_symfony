@@ -32,61 +32,15 @@ import './js/ace.min.js';
 import './bootstrap';
 
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import VueBodyClass from 'vue-body-class';
+
 import VueResource from 'vue-resource';
-import Vuex from "vuex";
 
 import App from './src/App';
-import Login from "./src/components/Login";
-import Calendar from "./src/components/Calendar";
-import Timeline from "./src/components/Timeline";
+import store from "./src/store";
+import router from "./src/router"
 
 Vue.use(VueResource);
-Vue.use(VueRouter);
-Vue.use(Vuex);
-
 Vue.config.productionTip = false;
-Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
-
-const routes = [
-    {
-        name: 'Login',
-        path: '/user-login',
-        component: Login,
-        meta: { bodyClass: 'login-layout' }
-    },
-    {
-        name: 'Timeline',
-        path: '/timeline',
-        component: Timeline
-    },
-    {
-        name: 'FullCalendar',
-        path: '/calendar',
-        component: Calendar
-    }
-];
-
-const router = new VueRouter({
-    routes
-});
-
-const vueBodyClass = new VueBodyClass(routes);
-router.beforeEach((to, from, next) => { vueBodyClass.guard(to, next) });
-
-const store = new Vuex.Store({
-    state: {
-        user: null
-    },
-
-    mutations: {
-        getUser () {
-            state.user = {id: 2, username: 'Vuex'}
-        }
-    }
-});
-
 
 new Vue({
     router,
@@ -94,56 +48,3 @@ new Vue({
     render: h =>h(App)
 }).$mount('#app');
 
-/*
-const apiUrl = 'https://study-organize-api.com.wip';
-
-var signupBox = new Vue({
-    el: '#signup-box',
-
-    data: {
-        email: 'test33@user.com',
-        password: '123123',
-        confirmPassword: '123123',
-        isVisible: false,
-        visible: '',
-    },
-
-    methods: {
-
-        submitForm: function () {
-            axios.post(apiUrl+'/register', {
-                email: this.email,
-                password: this.password,
-                plainPassword: this.confirmPassword
-            }).then(function (response) {
-                console.log(response);
-            }).catch(function (error) {
-                console.log(error)
-            })
-        }
-    }
-
-});
-
-var loginBox = new Vue({
-    el: '#login-box',
-    methods: {
-        showRegisterForm: function () {
-            this.isVisible = !this.isVisible;
-            if (this.isVisible) {
-
-                this.visible = 'visible'
-            } else {
-                signupBox.visible = 'visible';
-                this.visible = ''
-            }
-        }
-    },
-    data: {
-        isVisible: true,
-        visible: 'visible',
-        loginForm: {
-            username : 'test11@user.com'
-        }
-    }
-})*/

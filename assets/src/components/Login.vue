@@ -30,14 +30,14 @@
                       <fieldset>
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control" placeholder="Username" />
+															<input type="text" class="form-control" placeholder="Username" v-model="username" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                         </label>
 
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Password" />
+															<input type="password" class="form-control" placeholder="Password" v-model="password" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                         </label>
@@ -50,7 +50,7 @@
                             <span class="lbl"> Remember Me</span>
                           </label>
 
-                          <button type="button" class="width-35 pull-right btn btn-sm btn-primary">
+                          <button  v-on:click="userLogin()" type="button" class="width-35 pull-right btn btn-sm btn-primary">
                             <i class="ace-icon fa fa-key"></i>
                             <span class="bigger-110">Login</span>
                           </button>
@@ -197,7 +197,7 @@
                             <span class="bigger-110">Reset</span>
                           </button>
 
-                          <button type="button" class="width-65 pull-right btn btn-sm btn-success">
+                          <button  type="button" class="width-65 pull-right btn btn-sm btn-success">
                             <span class="bigger-110">Register</span>
 
                             <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
@@ -239,8 +239,21 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
-  name: "Login"
+
+  name: "Login",
+  computed: mapGetters(["user"]),
+  methods: mapActions(["fetchUser", "userLogin"]),
+
+  data() {
+    return {
+      username: 'user11@user.com',
+      password: '123123'
+    };
+  },
+
 }
 </script>
 

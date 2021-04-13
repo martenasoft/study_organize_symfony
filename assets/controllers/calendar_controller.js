@@ -2,14 +2,19 @@ jQuery(function ($) {
     /* initialize the external events
         -----------------------------------------------------------------*/
 
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+
+   /* var str = '';
+    $('.list-unstyled li').each(function() {
+        str += '"' + $(this).find('i').attr('class').replace('ace-icon glyphicon ', '') + '",' +"\n" ;
+    });
+    console.log(str);*/
+    $('#calendar_color').ace_colorpicker();
+
     if (typeof calendarEvents !== undefined) {
-
-        $('.date-picker').datepicker({
-            autoclose: true,
-            todayHighlight: true
-        });
-
-        $('#calendar_color').colorpicker();
 
         $('#external-events div.external-event').each(function () {
             var eventObject = {
@@ -45,7 +50,7 @@ jQuery(function ($) {
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month,agendaWeek,agendaDay'
+            //    right: 'month,agendaWeek,agendaDay'
             },
             events: calendarEvents,
 
@@ -90,6 +95,7 @@ jQuery(function ($) {
             selectable: true,
             selectHelper: true,
             select: function (start, end, allDay) {
+                $("#calendar_title").val('');
                 $("#calendar_start").val(start.format('yyyy-MM-DD'));
                 $("#calendar_end").val(end.format('yyyy-MM-DD'));
                 $("#btn-submit").removeAttr('disabled').removeClass('disabled');

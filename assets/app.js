@@ -15,6 +15,7 @@ import './css/ace-skins.min.css';
 import './css/ace-rtl.min.css';
 import './css/jquery-ui.custom.min.css';
 import './css/fullcalendar.min.css';
+import './css/bootstrap-colorpicker.min.css';
 
 const $ = require('jquery');
 global.$ = global.jQuery = $;
@@ -36,7 +37,10 @@ import './js/jquery.flot.resize.min.js';
 import './js/ace-elements.min.js';
 import './js/ace.min.js';
 import './js/fullcalendar.min.js';
+import './js/bootstrap-colorpicker.min.js';
+
 import './bootstrap';
+
 
 
 

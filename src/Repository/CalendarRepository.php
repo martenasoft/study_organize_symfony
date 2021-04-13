@@ -33,8 +33,8 @@ class CalendarRepository extends ServiceEntityRepository
 
         if (!empty($res)) {
             $ret = $res;
-            $ret['inProccess'] = $ret['in_process'] / $ret['total']  * 100;
-            $ret['inFinished'] = $ret['finished'] / $ret['total']  * 100;
+            $ret['inProccess'] = $ret['total'] > 0 ?  $ret['in_process'] / $ret['total']  * 100 : 0;
+            $ret['inFinished'] = $ret['total'] > 0 ? $ret['finished'] / $ret['total']  * 100 : 0;
         }
         return $ret;
     }

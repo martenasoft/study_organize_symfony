@@ -1,3 +1,8 @@
+<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+    <i class="ace-icon fa fa-tasks"></i>
+    <span class="badge badge-grey">{{ data.total }}</span>
+</a>
+
 <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
 
     <li class="dropdown-header">
@@ -11,7 +16,7 @@
             <li>
                 <a href="#">
                     <div class="clearfix">
-                        <span class="pull-left">Software Update</span>
+                        <span class="pull-left">In process</span>
                         <span class="pull-right">{{ data.inProccess }}%</span>
                     </div>
 
@@ -24,7 +29,7 @@
             <li>
                 <a href="#">
                     <div class="clearfix">
-                        <span class="pull-left">Hardware Upgrade</span>
+                        <span class="pull-left">Finished</span>
                         <span class="pull-right">{{ data.inFinished }}%</span>
                     </div>
 

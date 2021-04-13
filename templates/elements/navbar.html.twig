@@ -11,7 +11,7 @@
         </button>
 
         <div class="navbar-header pull-left">
-            <a href="index.html" class="navbar-brand">
+            <a href="{{ path('user_index') }}" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
                     Ace Admin
@@ -22,10 +22,7 @@
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
             <ul class="nav ace-nav">
                 <li class="grey dropdown-modal">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="ace-icon fa fa-tasks"></i>
-                        <span class="badge badge-grey">4</span>
-                    </a>
+
 
                     {{ render(controller('App\\Controller\\StatisticController:short')) }}
                 </li>

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-xs-12">
             <!-- PAGE CONTENT BEGINS -->
-            <div class="align-right">
+<!--            <div class="align-right">
                 <span class="green middle bolder">Choose timeline: &nbsp;</span>
 
                 <div class="btn-toolbar inline middle no-margin">
@@ -34,14 +34,14 @@
                         </label>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <div id="timeline-1">
                 <div class="row">
                     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
                         {% set showed = '' %}
                         {% for item in items %}
-                        <div class="timeline-container">
+                        <div class="timeline-container" >
                             {% if showed != (item.start | date("Y-m-d")) %}
                             <div class="timeline-label">
                                 <span class="label label-primary arrowed-in-right label-lg">
@@ -52,7 +52,14 @@
 
                                     {% if (item_.start | date("Y-m-d")) == (item.start | date("Y-m-d")) %}
                                     <div class="timeline-items">
-                                <div class="timeline-item clearfix">
+                                <div class="timeline-item clearfix" >
+
+                                    {% if item_.icon is not empty %}
+                                    <div class="timeline-info">
+                                        <i style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; color: #fff' }} " class="timeline-indicator ace-icon fa {{ item_.icon}}
+                                         no-hover"></i>
+                                    </div>
+                                        {% endif %}
 <!--
                                     <div class="timeline-info">
 -                                        <img alt="Susan't Avatar" src="assets/images/avatars/avatar1.png" />
@@ -60,8 +67,8 @@
                                     </div>
 -->
 
-                                    <div class="widget-box transparent">
-                                        <div class="widget-header widget-header-small">
+                                    <div class="widget-box transparent" >
+                                        <div class="widget-header widget-header-small" >
                                             <h5 class="widget-title smaller">
                                                 <a href="#" class="blue">Susan</a>
 
@@ -84,8 +91,8 @@
 																</span>
                                         </div>
 
-                                        <div class="widget-body">
-                                            <div class="widget-main">
+                                        <div class="widget-body"  >
+                                            <div class="widget-main" style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; color: #fff' }} ">
                                                 Anim pariatur cliche reprehenderit, enim eiusmod
                                                 <span class="red">high life</span>
 

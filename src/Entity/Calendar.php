@@ -10,42 +10,49 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Calendar
 {
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_DONE = 2;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="start")
      */
-    private $user;
+    private User $user;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $start;
+    private \DateTimeInterface $start;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $end;
+    private \DateTimeInterface $end;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private \DateTimeInterface $changedStatus;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $title;
+    private string $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $about;
+    private string $about;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
      */
-    private $color;
+    private string $color;
 
     /**
      * @ORM\Column(type="smallint")
@@ -90,6 +97,17 @@ class Calendar
     {
         $this->end = $end;
 
+        return $this;
+    }
+
+    public function getChangedStatus(): \DateTimeInterface
+    {
+        return $this->changedStatus;
+    }
+
+    public function setChangedStatus(\DateTimeInterface $changedStatus): self
+    {
+        $this->changedStatus = $changedStatus;
         return $this;
     }
 
@@ -140,4 +158,5 @@ class Calendar
 
         return $this;
     }
+
 }

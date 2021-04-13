@@ -3,48 +3,39 @@
 namespace App\Repository;
 
 use App\Entity\Calendar;
+use App\Entity\User;
+use App\Repository\Traits\TraitRepositoryGetQueryBuilderByUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method Calendar|null find($id, $lockMode = null, $lockVersion = null)
- * @method Calendar|null findOneBy(array $criteria, array $orderBy = null)
- * @method Calendar[]    findAll()
- * @method Calendar[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class CalendarRepository extends ServiceEntityRepository
 {
+    use TraitRepositoryGetQueryBuilderByUser;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Calendar::class);
+        $this->setAlias('c');
     }
 
-    // /**
-    //  * @return Calendar[] Returns an array of Calendar objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getStatistics(User $user): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $sql = "SELECT
+                    COUNT(*) AS total,
+                    COUNT(CASE WHEN c.status = 1 THEN 1 ELSE NULL END) AS in_process,
+                    COUNT(CASE WHEN  c.end > c.changed_status THEN 1 ELSE NULL END) AS finished
+                FROM calendar c WHERE c.user_id=:user;
+            ";
 
-    /*
-    public function findOneBySomeField($value): ?Calendar
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $res = $this->getEntityManager()->getConnection()->fetchAssociative($sql, ["user" => $user->getId()]);
+        $ret = [];
+
+        if (!empty($res)) {
+            $ret = $res;
+            $ret['inProccess'] = $ret['in_process'] / $ret['total']  * 100;
+            $ret['inFinished'] = $ret['finished'] / $ret['total']  * 100;
+        }
+        return $ret;
     }
-    */
 }

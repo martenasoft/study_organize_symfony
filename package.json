@@ -1,36 +1,36 @@
 {
-    "devDependencies": {
-        "@symfony/stimulus-bridge": "^2.0.0",
-        "@symfony/webpack-encore": "^1.0.0",
-        "core-js": "^3.0.0",
-        "file-loader": "^6.0.0",
-        "regenerator-runtime": "^0.13.2",
-        "stimulus": "^2.0.0",
-        "vue": "^2.5",
-        "vue-loader": "^15.9.5",
-        "vue-template-compiler": "^2.6.12",
-        "webpack-notifier": "^1.6.0"
-    },
-    "license": "UNLICENSED",
-    "private": true,
-    "scripts": {
-        "dev-server": "encore dev-server",
-        "dev": "encore dev",
-        "watch": "encore dev --watch",
-        "build": "encore production --progress"
-    },
-    "dependencies": {
-        "@fullcalendar/daygrid": "^5.6.0",
-        "@fullcalendar/interaction": "^5.6.0",
-        "@fullcalendar/vue": "^5.6.0",
-        "axios": "^0.21.1",
-        "dotenv-webpack": "^7.0.2",
-        "jquery": "2.1.4",
-        "moment": "^2.29.1",
-        "vue-body-class": "^3.0.2",
-        "vue-resource": "^1.5.2",
-        "vue-router": "^3.5.1",
-        "vuejs": "^3.0.1",
-        "vuex": "^3.6.2"
-    }
+  "devDependencies": {
+    "@symfony/stimulus-bridge": "^2.0.0",
+    "@symfony/webpack-encore": "^1.0.0",
+    "core-js": "^3.0.0",
+    "file-loader": "^6.0.0",
+    "regenerator-runtime": "^0.13.2",
+    "stimulus": "^2.0.0",
+    "vue": "^2.5",
+    "vue-loader": "^15.9.5",
+    "vue-template-compiler": "^2.6.12",
+    "webpack-notifier": "^1.6.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  },
+  "dependencies": {
+    "@fullcalendar/daygrid": "^5.6.0",
+    "@fullcalendar/interaction": "^5.6.0",
+    "@fullcalendar/vue": "^5.6.0",
+    "axios": "^0.21.1",
+    "bootbox": "^5.5.2",
+    "jquery": "2.1.4",
+    "moment": "^2.29.1",
+    "vue-body-class": "^3.0.2",
+    "vue-resource": "^1.5.2",
+    "vue-router": "^3.5.1",
+    "vuejs": "^3.0.1",
+    "vuex": "^3.6.2"
+  }
 }

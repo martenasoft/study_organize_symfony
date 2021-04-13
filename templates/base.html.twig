@@ -13,7 +13,55 @@
 </head>
 <body class="no-skin">
 
-<div id="app"></div>
+{% include 'elements/navbar.html.twig' %}
+
+
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+
+    <div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+        <script type="text/javascript">
+            try {
+                ace.settings.loadState('sidebar')
+            } catch (e) {
+            }
+        </script>
+        {% include 'elements/slider.html.twig' %}
+    </div>
+
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            {% include 'elements/breadcrumbs.html.twig' %}
+
+
+            <div class="page-content">
+
+                {% include 'elements/page_settings.html.twig' %}
+                            <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        {% block body %}
+                        {% endblock %}
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+
+    {% include 'elements/footer.html.twig' %}
+
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
 
 
 {% block javascripts %}

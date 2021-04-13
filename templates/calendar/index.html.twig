@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CalendarController!{% endblock %}
+
+{% block body %}
+
+
+    <div class="row">
+        <div class="col-sm-9">
+
+            <div class="space"></div>
+
+            <div id="calendar"></div>
+        </div>
+
+        <div class="col-sm-3">
+
+
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <div class="row">
+                <div class="col-sm-6">
+                    <button id="btn-submit" {{ id is empty ? "disabled" }}
+                            class="btn btn-primary {{ id is empty ? "disabled" }}">Save
+                    </button>
+                    <a href="{{ path("calendar_index") }}" class="btn btn-default">Cancel</a>
+                </div>
+                <div class="col-sm-6">
+                    {% if id is not empty %}
+                        <a href="{{ path("calendar_delete", {id: id}) }}" class="btn btn-danger pull-right">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_top %}
+    {{ parent() }}
+    <script type="text/javascript">
+        const changeData = function (id, start, end) {
+            window.location.href = "{{ path('calendar_change_data') }}/" + id + "/" + start + "/" + end;
+        };
+        const redirectToEdit = function (id) {
+            window.location.href = "{{ path('calendar_index') }}/" + id;
+        };
+        const calendarEvents = [{% for item in items %}{
+            id: "{{ item.id }}",
+            title: "{{ item.title }}",
+            start: "{{ item.start | date('Y-m-d') }}",
+            end: "{{ item.end | date('Y-m-d') }}",
+            className: "label-important",
+            about: "{{ item.about }}"
+        },{% endfor %}];
+    </script>
+{% endblock %}

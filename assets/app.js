@@ -16,11 +16,18 @@ import './css/ace-rtl.min.css';
 import './css/jquery-ui.custom.min.css';
 import './css/fullcalendar.min.css';
 
+const $ = require('jquery');
+global.$ = global.jQuery = $;
+
+
 import './js/bootstrap.min';
 import './js/jquery-ui.custom.min';
 import './js/jquery.ui.touch-punch.min';
 
 import './js/bootbox';
+
+import './js/bootstrap-datepicker.min.js';
+import './js/bootstrap-colorpicker.min.js';
 import './js/jquery.easypiechart.min.js';
 import './js/jquery.sparkline.index.min.js';
 import './js/jquery.flot.min.js';
@@ -28,9 +35,12 @@ import './js/jquery.flot.pie.min.js';
 import './js/jquery.flot.resize.min.js';
 import './js/ace-elements.min.js';
 import './js/ace.min.js';
-
+import './js/fullcalendar.min.js';
 import './bootstrap';
 
+
+
+/*
 import Vue from 'vue';
 
 import VueResource from 'vue-resource';
@@ -48,3 +58,4 @@ new Vue({
     render: h =>h(App)
 }).$mount('#app');
 
+*/

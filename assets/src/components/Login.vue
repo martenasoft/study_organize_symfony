@@ -30,14 +30,14 @@
                       <fieldset>
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control" placeholder="Username" v-model="username" />
+															<input type="text" class="form-control" placeholder="Username" v-model="loginData.username" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                         </label>
 
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control" placeholder="Password" v-model="password" />
+															<input type="password" class="form-control" placeholder="Password" v-model="loginData.password" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                         </label>
@@ -244,15 +244,18 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
 
   name: "Login",
-  computed: mapGetters(["user"]),
+  computed: mapGetters(["user", "loginData"]),
   methods: mapActions(["fetchUser", "userLogin"]),
+  mounted() {
+//    this.userLogin();
 
-  data() {
+  },
+ /* data() {
     return {
       username: 'user11@user.com',
       password: '123123'
     };
-  },
+  },*/
 
 }
 </script>

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CalendarController!{% endblock %}
+
+{% block body %}
+
+
+<div class="row">
+    <div class="col-sm-9">
+        <div class="space"></div>
+
+        <div id="calendar"></div>
+    </div>
+
+    <div class="col-sm-3">
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts_top %}
+    {{ parent() }}
+
+    <script type="text/javascript" >
+
+
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+
+        const calendarEvents = [
+            {
+                title: 'All Day Event',
+                start: new Date(y, m, 1),
+                className: 'label-important'
+            },
+
+            {
+                title: 'Some Event',
+                start: new Date(y, m, d-3, 16, 0),
+                allDay: false,
+                className: 'label-info'
+            }
+        ];
+    </script>
+{% endblock %}

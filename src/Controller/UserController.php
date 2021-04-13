@@ -7,12 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/")
+ * @Route("/user")
  */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/", name="user")
+     * @Route("/", name="user_index")
      */
     public function index(): Response
     {

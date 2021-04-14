@@ -2,17 +2,32 @@ jQuery(function ($) {
     /* initialize the external events
         -----------------------------------------------------------------*/
 
+    const dateFormat = 'yyyy-mm-dd';
     $('.date-picker').datepicker({
         autoclose: true,
-        todayHighlight: true
+        todayHighlight: true,
+        format: dateFormat
     });
+
+
+
+    function showErrorAlert (reason, detail) {
+        var msg='';
+        if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
+        else {
+            //console.log("error uploading file", reason, detail);
+        }
+        $('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+
+            '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
+    }
+
 
    /* var str = '';
     $('.list-unstyled li').each(function() {
         str += '"' + $(this).find('i').attr('class').replace('ace-icon glyphicon ', '') + '",' +"\n" ;
     });
     console.log(str);*/
-    $('#calendar_color').ace_colorpicker();
+    $('#calendar_color, #calendar_textColor, #calendar_iconColor, #calendar_iconTextColor').ace_colorpicker();
 
     if (typeof calendarEvents !== undefined) {
 
@@ -96,8 +111,8 @@ jQuery(function ($) {
             selectHelper: true,
             select: function (start, end, allDay) {
                 $("#calendar_title").val('');
-                $("#calendar_start").val(start.format('yyyy-MM-DD'));
-                $("#calendar_end").val(end.format('yyyy-MM-DD'));
+                $("#calendar_start").val(start.format(dateFormat));
+                $("#calendar_end").val(end.format(dateFormat));
                 $("#btn-submit").removeAttr('disabled').removeClass('disabled');
                 //calendar.fullCalendar('unselect');
             }

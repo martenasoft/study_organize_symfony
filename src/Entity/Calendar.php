@@ -165,6 +165,9 @@ class Calendar
         "glyphicon-backward",
     ];
     public const COLORS = [
+        '#fff',
+        '#f2f6f9',
+        '#646871',
         '#ac725e',
         '#d06b64',
         '#f83a22',
@@ -228,17 +231,32 @@ class Calendar
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private string $about;
+    private ?string $about = "";
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
      */
-    private string $color;
+    private ?string $color = "";
+
+    /**
+     * @ORM\Column(type="string", length=16, nullable=true)
+     */
+    private ?string $textColor = "";
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
      */
     private ?string $icon = "";
+
+    /**
+     * @ORM\Column(type="string", length=16, nullable=true)
+     */
+    private ?string $iconColor = "";
+
+    /**
+     * @ORM\Column(type="string", length=16, nullable=true)
+     */
+    private ?string $iconTextColor = "";
 
     /**
      * @ORM\Column(type="smallint")
@@ -330,6 +348,39 @@ class Calendar
     {
         $this->color = $color;
 
+        return $this;
+    }
+
+    public function getTextColor(): ?string
+    {
+        return $this->textColor;
+    }
+
+    public function setTextColor(?string $textColor): self
+    {
+        $this->textColor = $textColor;
+        return $this;
+    }
+
+    public function getIconColor(): ?string
+    {
+        return $this->iconColor;
+    }
+
+    public function setIconColor(?string $iconColor): self
+    {
+        $this->iconColor = $iconColor;
+        return $this;
+    }
+
+    public function getIconTextColor(): ?string
+    {
+        return $this->iconTextColor;
+    }
+
+    public function setIconTextColor(?string $iconTextColor): self
+    {
+        $this->iconTextColor = $iconTextColor;
         return $this;
     }
 

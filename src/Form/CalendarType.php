@@ -6,7 +6,10 @@ use App\Entity\Calendar;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CalendarType extends AbstractType
@@ -25,9 +28,12 @@ class CalendarType extends AbstractType
 
         $builder
             ->add('title')
-            ->add('about')
+            ->add('about', TextareaType::class, [
+                "required" => false
+            ])
             ->add('start', DateType::class, [
                 'widget' => 'single_text',
+              //  'format' => 'dd/mm/yyyy',
                 'attr' => [
                     'class' => 'date-picker'
                 ],
@@ -35,6 +41,8 @@ class CalendarType extends AbstractType
             ])
             ->add('end', DateType::class, [
                 'widget' => 'single_text',
+             //   'format' => 'dd/mm/yyyy',
+                'input' => 'datetime',
                 'attr' => [
                     'class' => 'date-picker'
                 ],
@@ -43,16 +51,37 @@ class CalendarType extends AbstractType
 
             ->add('color', ChoiceType::class, [
                 'choices' => $colorChoices,
+                "required" => false,
+                'attr' => ['class' => 'hide']
+            ])
+
+            ->add('textColor', ChoiceType::class, [
+                'choices' => $colorChoices,
+                "required" => false,
+                'attr' => ['class' => 'hide']
+            ])
+
+            ->add('iconColor', ChoiceType::class, [
+                'choices' => $colorChoices,
+                "required" => false,
+                'attr' => ['class' => 'hide']
+            ])
+
+            ->add('iconTextColor', ChoiceType::class, [
+                'choices' => $colorChoices,
+                "required" => false,
                 'attr' => ['class' => 'hide']
             ])
 
             ->add('icon', ChoiceType::class, [
                 'choices' => $iconsChoices,
+                "required" => false,
                 'expanded' => 'radio',
                 'choice_attr' => ['label' => false],
                 'label' => false
             ])
             ->add('status')
+
         ;
     }
 

@@ -7,7 +7,9 @@ use App\Controller\Traits\TraitGetCalendarRepository;
 use App\Entity\Calendar;
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -29,16 +31,24 @@ class TimelineController extends AbstractController
     /**
      * @Route("/", name="timeline_index")
      */
-    public function index(): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         //$this->isActiveOnly(false);
-        $items = $this
+
+
+        $query = $this
             ->getCalendarQueryBuilder($this->getUser())
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $pagination= $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+
+        );
+
 
         return $this->render('timeline/index.html.twig', [
-            'items' => $items,
+            'pagination' => $pagination,
         ]);
     }
 

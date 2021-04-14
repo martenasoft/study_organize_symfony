@@ -34,18 +34,28 @@ class CalendarController extends AbstractController
     public function index(Request $request, ?Calendar $calendar): Response
     {
         $id = null;
+
+
+
         if (empty($calendar)) {
             $calendar = new Calendar();
+            $calendar->setColor('#f2f6f9');
+            $calendar->setTextColor('#646871');
+            $calendar->setIconColor('#4986e7');
+            $calendar->setIconTextColor('#fff');
             $calendar->setStatus(Calendar::STATUS_ACTIVE);
             $calendar->setUser($this->getUser());
         } else {
             $id = $calendar->getId();
         }
 
+
+
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $this->entityManager->persist($calendar);
             $this->entityManager->flush();
             return $this->redirectToRoute('calendar_index');

@@ -16,6 +16,7 @@ import './css/ace-rtl.min.css';
 import './css/jquery-ui.custom.min.css';
 import './css/fullcalendar.min.css';
 import './css/bootstrap-colorpicker.min.css';
+import './css/app.css';
 
 const $ = require('jquery');
 global.$ = global.jQuery = $;

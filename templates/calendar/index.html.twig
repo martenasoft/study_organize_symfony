@@ -19,14 +19,11 @@
             {{ form_row(form.about) }}
             {{ form_row(form.start) }}
             {{ form_row(form.end) }}
-
-
-
-
-
+            {{ form_row(form.color) }}
+            {{ form_row(form.textColor) }}
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                Launch demo modal
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                Icons
             </button>
 
             <!-- Modal -->
@@ -34,41 +31,39 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Modal title</h4>
                         </div>
                         <div class="modal-body">
                             <div class="control-group">
                                 <div class="bootstrap-colorpicker">
-                                    {{ form_row(form.color) }}
+                                    {{ form_row(form.iconColor) }}
                                 </div>
                             </div>
-                            <div class="row">
-                            {% for item_ch in form.icon %}
-                                <div class="col-sm-2">
-                                    <div class="row">
-
-                                        <div class="col-sm-6">
-                                                    <i style="font-size: 25px" class="ace-icon fa {{ item_ch.vars.value }}"></i>
-                                        </div>
+                            <div class="control-group">
+                                <div class="bootstrap-colorpicker">
+                                    {{ form_row(form.iconTextColor) }}
+                                </div>
+                            </div>
+                            <div class="row" style=" height: 200px;  overflow: auto;">
+                                {% for item_ch in form.icon %}
+                                    <div class="col-sm-2">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <i style="font-size: 25px"
+                                                   class="ace-icon fa {{ item_ch.vars.value }}"></i>
+                                            </div>
                                             <div class="col-sm-6">
                                                 {{ form_row(item_ch, {label:false}) }}
                                             </div>
-
-
                                         </div>
-
-
-
-
-                                </div>
-                            {% endfor %}
-
-                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -78,8 +73,8 @@
 
             <div class="row">
                 <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
-                    <button id="btn-submit" {{ id is empty ? "disabled" }}
-                            class="btn btn-primary {{ id is empty ? "disabled" }}">Save
+                    <button type="submit" id="btn-submit"
+                            class="btn btn-primary ">Save
                     </button>
 
                     <a href="{{ path("calendar_index") }}" class="btn btn-default">Cancel</a>
@@ -109,7 +104,9 @@
         };
         const calendarEvents = [{% for item in items %}{
             id: "{{ item.id }}",
+
             color: "{{ item.color is not empty ? item.color : '#ffad46' }}",
+            textColor: "{{ item.textColor is not empty ? item.textColor : '#fff' }}",
             title: "{{ item.title }}",
             start: "{{ item.start | date('Y-m-d') }}",
             end: "{{ item.end | date('Y-m-d') }}",

@@ -6,35 +6,35 @@
         }
     </script>
 
-<!--    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
-        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-            <button class="btn btn-success">
-                <i class="ace-icon fa fa-signal"></i>
-            </button>
+    <!--    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+            <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+                <button class="btn btn-success">
+                    <i class="ace-icon fa fa-signal"></i>
+                </button>
 
-            <button class="btn btn-info">
-                <i class="ace-icon fa fa-pencil"></i>
-            </button>
+                <button class="btn btn-info">
+                    <i class="ace-icon fa fa-pencil"></i>
+                </button>
 
-            <button class="btn btn-warning">
-                <i class="ace-icon fa fa-users"></i>
-            </button>
+                <button class="btn btn-warning">
+                    <i class="ace-icon fa fa-users"></i>
+                </button>
 
-            <button class="btn btn-danger">
-                <i class="ace-icon fa fa-cogs"></i>
-            </button>
-        </div>
+                <button class="btn btn-danger">
+                    <i class="ace-icon fa fa-cogs"></i>
+                </button>
+            </div>
 
-        <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-            <span class="btn btn-success"></span>
+            <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+                <span class="btn btn-success"></span>
 
-            <span class="btn btn-info"></span>
+                <span class="btn btn-info"></span>
 
-            <span class="btn btn-warning"></span>
+                <span class="btn btn-warning"></span>
 
-            <span class="btn btn-danger"></span>
-        </div>
-    </div>-->
+                <span class="btn btn-danger"></span>
+            </div>
+        </div>-->
     <!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
@@ -54,9 +54,9 @@
                 <span class="menu-text">
 								Calendar
 
-<!--								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
-									<i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-								</span>-->
+                    <!--								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
+                                                        <i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
+                                                    </span>-->
 							</span>
             </a>
 
@@ -66,16 +66,18 @@
         <li class="">
             <a href="{{ path("timeline_index") }}">
                 <i class="menu-icon ace-icon glyphicon glyphicon-list"></i>
-
-                <span class="menu-text">
-								Timeline
-
-                    <!--								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
-                                                        <i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-                                                    </span>-->
-							</span>
+                <span class="menu-text">Timeline</span>
             </a>
 
+            <b class="arrow"></b>
+        </li>
+
+
+        <li class="">
+            <a href="{{ path("checklist_index") }}">
+                <i class="menu-icon ace-icon glyphicon glyphicon-list"></i>
+                <span class="menu-text">Checklist</span>
+            </a>
             <b class="arrow"></b>
         </li>
 

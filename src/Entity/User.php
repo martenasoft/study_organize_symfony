@@ -49,9 +49,15 @@ class User implements UserInterface
      */
     private $calendar;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Checklist::class, mappedBy="user")
+     */
+    private $checklist;
+
     public function __construct()
     {
         $this->calendar = new ArrayCollection();
+        $this->checklist = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -171,6 +177,36 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($calendar->getUser() === $this) {
                 $calendar->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Checklist[]
+     */
+    public function getChecklist(): Collection
+    {
+        return $this->checklist;
+    }
+
+    public function addChecklist(Checklist $checklist): self
+    {
+        if (!$this->checklist->contains($checklist)) {
+            $this->checklist[] = $checklist;
+            $checklist->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChecklist(Checklist $checklist): self
+    {
+        if ($this->checklist->removeElement($checklist)) {
+            // set the owning side to null (unless already changed)
+            if ($checklist->getUser() === $this) {
+                $checklist->setUser(null);
             }
         }
 

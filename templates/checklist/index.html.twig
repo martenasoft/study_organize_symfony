@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checklist{% endblock %}
+{% block breadcrumbs %}
+    <li>
+        Checklist
+    </li>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Checklist</h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="">
+                <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
+                <div class="navigation">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+                <hr>
+            </div>
+
+            <div class="space"></div>
+
+            {% if pagination.getTotalItemCount > 0 %}
+
+                <div class="message-list-container">
+
+                    {% for item in pagination %}
+
+                        <div class="message-list" id="message-list">
+                            <div class="message-item message-unread {{ app.request.get('id') == item.id ? 'selected'}} ">
+                                <label class="inline">
+                                    <input type="checkbox"
+                                           {{ item.status == 2 ? 'checked' }}
+                                           onclick="document.location.href = '{{ path('checklist_status', {id:item.id}) }}';"
+                                           class="ace"/>
+                                    <span class="lbl"></span>
+                                </label>
+
+
+                                <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "  class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}" title="{{ item.title }}">{{ item.title }}</span>
+
+                                <span class="summary">
+                                    <span style="{{ item.status == 2 ? 'text-decoration: line-through' }} "  class=" {{ item.status == 2 ? 'text-muted' : 'text'}}">
+                                        {{ item.about }}
+                                    </span>
+
+                                </span>
+                                <span class="time">
+                                    <a href="{{ path('checklist_index', {id: item.id}) }}"><i class="ace-icon fa fa-pencil blue bigger-125"></i></a>
+                                    <a href="#"><i class="ace-icon fa fa-times red bigger-125"></i></a>
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+
+
+        <div class="col-sm-4">
+            {{ form_start(form) }}
+            {{ form_row(form) }}
+
+            <hr>
+            <div class="row">
+                <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
+                    <button type="submit" id="btn-submit"
+                            class="btn btn-primary ">Save
+                    </button>
+
+                    <a href="{{ path("checklist_index") }}" class="btn btn-default">Cancel</a>
+                </div>
+                {% if id is not empty %}
+                    <div class="col-sm-6">
+                        <a href="{{ path("checklist_delete", {id: id}) }}" class="btn btn-danger pull-right">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+
+
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

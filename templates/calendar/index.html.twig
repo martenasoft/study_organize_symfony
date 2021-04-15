@@ -96,22 +96,16 @@
     {{ parent() }}
     <script type="text/javascript">
 
+        const getDataUrl = function(start, end) {
+            return "{{ path('calendar_get_items') }}/" + start + '/'+end;
+        }
+
         const changeData = function (id, start, end) {
             window.location.href = "{{ path('calendar_change_data') }}/" + id + "/" + start + "/" + end;
         };
         const redirectToEdit = function (id) {
             window.location.href = "{{ path('calendar_index') }}/" + id;
         };
-        const calendarEvents = [{% for item in items %}{
-            id: "{{ item.id }}",
 
-            color: "{{ item.color is not empty ? item.color : '#ffad46' }}",
-            textColor: "{{ item.textColor is not empty ? item.textColor : '#fff' }}",
-            title: "{{ item.title }}",
-            start: "{{ item.start | date('Y-m-d') }}",
-            end: "{{ item.end | date('Y-m-d') }}",
-            className: "label-important",
-            about: "{{ item.about }}"
-        },{% endfor %}];
     </script>
 {% endblock %}

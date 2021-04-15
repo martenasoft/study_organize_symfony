@@ -9,9 +9,12 @@ use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -102,6 +105,44 @@ class CalendarController extends AbstractController
         }
 
         return $this->redirectToRoute(!empty($retTl) ? "timeline_index" : "calendar_index");
+    }
+
+    /**
+     * @Route("/items/{start?}/{end?}", name="calendar_get_items")
+     */
+    public function getItems(SerializerInterface $serializer, ?string $start = null, ?string $end): Response
+    {
+        if (
+            !preg_match('/(\d{4}\-(\d{2})\-(\d{2}))/', $start) ||
+            !preg_match('/(\d{4}\-(\d{2})\-(\d{2}))/', $end)) {
+            return $this->json(["Error params"], 504);
+        }
+
+        $alias = $this->calendarRepository->getAlias();
+        $ret = [];
+        $items = $this
+            ->calendarRepository
+            ->getLoadItems($this->getUser(), new \DateTime($start), new \DateTime($end))
+         //   ->select("$alias.id, $alias.textColor, $alias.title, $alias.start, $alias.end, 'label-important' AS className, $alias.about")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        foreach ($items as $item) {
+            $ret[]  = [
+                "id" => $item->getId(),
+                "title" => $item->getTitle(),
+                "color" => $item->getColor(),
+                "textColor" => $item->getTextColor(),
+                "about" => $item->getAbout(),
+                "className" => "label-important",
+                "start" => $item->getStart()->format('Y-m-d'),
+                "end" => $item->getEnd()->format('Y-m-d'),
+            ];
+        }
+
+       // return new JsonResponse($serializer->serialize($ret));
+        return $this->json($ret);
     }
 
 }

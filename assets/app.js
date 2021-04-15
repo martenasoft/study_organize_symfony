@@ -21,11 +21,9 @@ import './css/app.css';
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-
 import './js/bootstrap.min';
 import './js/jquery-ui.custom.min';
 import './js/jquery.ui.touch-punch.min';
-
 import './js/bootbox';
 
 import './js/bootstrap-datepicker.min.js';

@@ -1,3 +1,9 @@
 .btn-colorpicker {
     border: 1px solid;
 }
+.fc-event {
+    padding: 5px;
+    font-size: 1.0em;
+    line-height: 1.4;
+    font-weight: 400;
+}

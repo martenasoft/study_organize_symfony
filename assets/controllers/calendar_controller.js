@@ -9,7 +9,11 @@ jQuery(function ($) {
         format: dateFormat
     });
 
-
+    const getGateFormat = function (date) {
+        const mm = date._d.getMonth() + 1;
+        const dd = date._d.getDate();
+        return date._d.getFullYear()+'-'+(mm < 10 ? '0' : '')+ mm+'-'+(dd < 10 ? '0' : '') + dd;
+    }
 
     function showErrorAlert (reason, detail) {
         var msg='';
@@ -29,7 +33,7 @@ jQuery(function ($) {
     console.log(str);*/
     $('#calendar_color, #calendar_textColor, #calendar_iconColor, #calendar_iconTextColor').ace_colorpicker();
 
-    if (typeof calendarEvents !== undefined) {
+  //  if (typeof window['calendarEvents'] !== undefined) {
 
         $('#external-events div.external-event').each(function () {
             var eventObject = {
@@ -56,7 +60,8 @@ jQuery(function ($) {
         var calendar = $('#calendar').fullCalendar({
             //isRTL: true,
             //firstDay: 1,// >> change first day of week
-
+            height: 680,
+            lazyFetching: true,
             buttonHtml: {
                 prev: '<i class="ace-icon fa fa-chevron-left"></i>',
                 next: '<i class="ace-icon fa fa-chevron-right"></i>'
@@ -67,7 +72,10 @@ jQuery(function ($) {
                 center: 'title',
             //    right: 'month,agendaWeek,agendaDay'
             },
-            events: calendarEvents,
+            //events: calendarEvents,
+            events: function (start, end, timezone, callback) {
+                $.get(getDataUrl(getGateFormat(start), getGateFormat(end)), callback);
+            },
 
             eventResize: function (event, delta, revertFunc) {
                 changeData(event.id, event.start.format(), event.end.format());
@@ -124,6 +132,6 @@ jQuery(function ($) {
             }
 
         });
-    }
+   // }
 
 })

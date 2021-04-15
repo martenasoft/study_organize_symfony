@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+
 
 /**
  * @ORM\Entity(repositoryClass=CalendarRepository::class)
@@ -209,11 +211,13 @@ class Calendar
     private User $user;
 
     /**
+     * @JMS\Type("DateTime<'Y-m-d'>")
      * @ORM\Column(type="datetime")
      */
     private \DateTimeInterface $start;
 
     /**
+     * @JMS\Type("DateTime<'Y-m-d'>")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private \DateTimeInterface $end;

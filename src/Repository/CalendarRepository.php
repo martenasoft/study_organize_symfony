@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\Traits\TraitRepositoryGetQueryBuilderByUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class CalendarRepository extends ServiceEntityRepository
@@ -33,9 +34,18 @@ class CalendarRepository extends ServiceEntityRepository
 
         if (!empty($res)) {
             $ret = $res;
-            $ret['inProccess'] = $ret['total'] > 0 ?  $ret['in_process'] / $ret['total']  * 100 : 0;
-            $ret['inFinished'] = $ret['total'] > 0 ? $ret['finished'] / $ret['total']  * 100 : 0;
+            $ret['inProccess'] = $ret['total'] > 0 ? $ret['in_process'] / $ret['total'] * 100 : 0;
+            $ret['inFinished'] = $ret['total'] > 0 ? $ret['finished'] / $ret['total'] * 100 : 0;
         }
         return $ret;
     }
+
+    public function getLoadItems(User $user, \DateTimeInterface $start, \DateTimeInterface $end): QueryBuilder
+    {
+        return $this
+            ->getQueryBuilderByUser($user)
+            ->andWhere($this->getAlias() . '.start>:date1')->setParameter('date1', $start)
+            ->andWhere($this->getAlias() . '.start<=:date2')->setParameter('date2', $end);
+    }
+
 }

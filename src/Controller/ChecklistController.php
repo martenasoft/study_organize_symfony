@@ -87,15 +87,15 @@ class ChecklistController extends AbstractController
 
         $query = $this
             ->checklistRepository
-            ->getQueryBuilderByUser($this->getUser());
+            ->getQueryBuilderByUser($this->getUser())
+            ->orderBy($this->checklistRepository->getAlias().".id", "DESC")
+        ;
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
 
         );
-
-
         $form = $this->createForm(ChecklistType::class, $checklist);
         $form->handleRequest($request);
 
@@ -113,8 +113,6 @@ class ChecklistController extends AbstractController
             'id' => $id
         ]);
     }
-
-
 
     /**
      * @Route ("/delete/{id}/{retTl?}", name="checklist_delete")

@@ -51,12 +51,12 @@ Checklist
                                 <span class="time">
                                     {% if item.status == 1 %}
                                         <a href="{{ path('checklist_calendar', {id: item.id}) }}" onclick="return confirm('Transfer it to calendar?')">
-                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125"></i>
+                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125" style="padding-right: 10px;"></i>
                                         </a>
                                     {% else %}
-                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"></i>
+                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125" style="padding-right: 10px;"></i>
                                     {% endif %}
-                                    <a href="{{ path('checklist_index', {id: item.id}) }}"><i class="ace-icon fa fa-pencil blue bigger-125"></i></a>
+                                    <a href="{{ path('checklist_index', {id: item.id}) }}" ><i class="ace-icon fa fa-pencil blue bigger-125"></i></a>
                                     <a href="{{ path('checklist_delete', {id: item.id}) }}" onclick="return confirm('Delete item?')">
                                         <i class="ace-icon fa fa-times red bigger-125"></i>
                                     </a>

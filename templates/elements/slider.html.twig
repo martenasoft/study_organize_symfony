@@ -38,7 +38,8 @@
     <!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li class="">
+        <li class="{{ app.request.get("_route") == 'user_index' ? 'active' }}">
+
             <a href="{{ path('user_index') }}">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Dashboard </span>
@@ -47,23 +48,17 @@
             <b class="arrow"></b>
         </li>
 
-        <li class="">
+        <li class="{{ app.request.get("_route") == 'calendar_index' ? 'active' }}">
             <a href="{{ path("calendar_index") }}">
                 <i class="menu-icon fa fa-calendar"></i>
 
-                <span class="menu-text">
-								Calendar
-
-                    <!--								<span class="badge badge-transparent tooltip-error" title="2 Important Events">
-                                                        <i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-                                                    </span>-->
-							</span>
+                <span class="menu-text">Calendar</span>
             </a>
 
             <b class="arrow"></b>
         </li>
 
-        <li class="">
+        <li class="{{ app.request.get("_route") == 'timeline_index' ? 'active' }}">
             <a href="{{ path("timeline_index") }}">
                 <i class="menu-icon ace-icon glyphicon glyphicon-list"></i>
                 <span class="menu-text">Timeline</span>
@@ -73,9 +68,9 @@
         </li>
 
 
-        <li class="">
+        <li class="{{ app.request.get("_route") == 'checklist_index' ? 'active' }}">
             <a href="{{ path("checklist_index") }}">
-                <i class="menu-icon ace-icon glyphicon glyphicon-list"></i>
+                <i class="menu-icon ace-icon glyphicon glyphicon-check"></i>
                 <span class="menu-text">Checklist</span>
             </a>
             <b class="arrow"></b>
@@ -84,8 +79,8 @@
 
     </ul><!-- /.nav-list -->
 
-    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+<!--    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state"
            data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
-    </div>
+    </div>-->
 </div>

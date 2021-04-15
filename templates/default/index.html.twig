@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Study Organize{% endblock %}
+
+{% block breadcrumbs %}
+    <li>
+        {{ site_name }}
+    </li>
+{% endblock %}
+
+{% block h1 %}
+   {{ site_name }}
+{% endblock %}
+
+{% block body %}
+    <div class="well">
+        <h4 class="green smaller lighter">Hello! I can help you to study something.</h4>
+        {% if app.user is empty %}
+            <a href="{{ path("app_login") }}">Go Login</a> Or
+            <a href="{{ path("app_register") }}">Go Registration</a>
+        {% else %}
+        {% endif %}
+
+    </div>
+{% endblock %}

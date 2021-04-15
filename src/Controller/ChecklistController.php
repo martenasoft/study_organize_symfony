@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Calendar;
 use App\Entity\Checklist;
 use App\Form\ChecklistType;
 use App\Repository\ChecklistRepository;
@@ -40,6 +41,36 @@ class ChecklistController extends AbstractController
     }
 
     /**
+     * @Route ("/calendar/{id?}", name="checklist_calendar")
+     */
+    public function calendar(?Checklist $checklist = null): Response
+    {
+        if ($checklist) {
+            $calendar = new Calendar();
+            $dateStart = new \DateTime('now');
+            $dateEnd = new \DateTime('now');
+            $dateEnd->modify("+1 day");
+            $calendar
+                ->setUser($this->getUser())
+                ->setStart($dateStart)
+                ->setEnd($dateEnd)
+                ->setStatus(Calendar::STATUS_ACTIVE)
+                ->setTitle($checklist->getTitle())
+                ->setAbout($checklist->getAbout())
+                ->setColor($checklist->getColor())
+            ;
+
+            $this->entityManager->persist($calendar);
+            $this->entityManager->remove($checklist);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute("calendar_index", ['id' => $calendar->getId()]);
+        }
+        return $this->redirectToRoute("checklist_index");
+    }
+
+
+    /**
      * @Route("/{id?}", name="checklist_index")
      */
     public function index(Request $request, PaginatorInterface $paginator, ?Checklist $checklist = null): Response
@@ -48,6 +79,7 @@ class ChecklistController extends AbstractController
         if (empty($checklist)) {
             $checklist = new Checklist();
             $checklist
+                ->setStatus(1)
                 ->setUser($this->getUser());
         } else {
             $id = $checklist->getId();

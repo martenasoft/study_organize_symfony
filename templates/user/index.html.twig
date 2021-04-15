@@ -1,7 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserController!{% endblock %}
+{% block title %}Dashboard{% endblock %}
+
+{% block breadcrumbs %}
+    <li>
+        Dashboard
+    </li>
+{% endblock %}
+
+{% block h1 %}
+    Dashboard
+{% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-sm-4">
+            <a href="{{ path('calendar_index') }}" class="btn btn-app btn-primary no-radius">
+                <i class="ace-icon fa fa-calendar bigger-230"></i>
+                Calendar
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <a href="{{ path('timeline_index') }}" class="btn btn-app btn-primary no-radius">
+                <i class="ace-icon glyphicon glyphicon-list bigger-230"></i>
+                Timeline
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <a href="{{ path('checklist_index') }}" class="btn btn-app btn-primary no-radius">
+                <i class="ace-icon glyphicon glyphicon-check bigger-230"></i>
+                Checklist
+            </a>
+        </div>
+
+    </div>
 
 {% endblock %}

@@ -9,10 +9,9 @@
         <div class="center">
             <h1>
                 <i class="ace-icon fa fa-leaf green"></i>
-                <span class="red">Ace</span>
-                <span class="white" id="id-text2">Application</span>
+                <span class="red">{{ site_name }}</span>
             </h1>
-            <h4 class="blue" id="id-company-text">&copy; Company Name</h4>
+
         </div>
 
         <div class="space-6"></div>
@@ -22,10 +21,7 @@
             <div id="signup-box" class="visible signup-box widget-box no-border">
                 <div class="widget-body">
                     <div class="widget-main">
-                        <h4 class="header green lighter bigger">
-                            <i class="ace-icon fa fa-users blue"></i>
-                            New User Registration
-                        </h4>
+
                         <div class="space-6"></div>
                         {% for flashError in app.flashes('verify_email_error') %}
                             <div class="alert alert-danger" role="alert">{{ flashError }}</div>
@@ -36,46 +32,39 @@
                             <label class="block clearfix">
                                 {{ form_label(registrationForm.email) }}
                                 <span class="block input-icon input-icon-right">
-                                                               {{ form_widget(registrationForm.email) }}
-															<i class="ace-icon fa fa-envelope"></i>
-														</span>
+                                       {{ form_widget(registrationForm.email) }}
+                                    <i class="ace-icon fa fa-envelope"></i>
+                                </span>
                             </label>
 
 
                             <label class="block clearfix">
                                 {{ form_label(registrationForm.plainPassword.first) }}
                                 <span class="block input-icon input-icon-right">
-                                                             {{ form_widget(registrationForm.plainPassword.first, {
-                                                                 label: 'Password'
-                                                             }) }}
-
-
-															<i class="ace-icon fa fa-retweet"></i>
-														</span>
+                                     {{ form_widget(registrationForm.plainPassword.first, {
+                                         label: 'Password'
+                                     }) }}
+                                    <i class="ace-icon fa fa-retweet"></i>
+                                </span>
                             </label>
                             <label class="block clearfix">
                                 {{ form_label(registrationForm.plainPassword.second) }}
                                 <span class="block input-icon input-icon-right">
-                                                             {{ form_widget(registrationForm.plainPassword.second, {
-                                                                 label: 'Password'
-                                                             }) }}
+                                     {{ form_widget(registrationForm.plainPassword.second, {
+                                         label: 'Password'
+                                     }) }}
                                     {{ form_errors(registrationForm.plainPassword.first) }}
-
-															<i class="ace-icon fa fa-retweet"></i>
-														</span>
+                                    <i class="ace-icon fa fa-retweet"></i>
+                                </span>
                             </label>
 
                             <label class="block">
                                 {{ form_widget(registrationForm.agreeTerms, {
-                                    attr: {class: 'ace'}
+                                    attr: {class: 'ace1'}
                                 }) }}
-                                <span class="lbl">
-															Remember Me
-															<a href="#">User Agreement</a>
-														</span>
                             </label>
 
-                            <div class="space-24"></div>
+                            <div class="space-15"></div>
 
                             <div class="clearfix">
                                 <button type="reset" class="width-30 pull-left btn btn-sm">

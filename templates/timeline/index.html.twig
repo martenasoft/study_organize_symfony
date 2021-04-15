@@ -1,24 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TimelineController!{% endblock %}
+{% block title %}Timeline{% endblock %}
 {% block breadcrumbs %}
     <li>
         Timeline
     </li>
 {% endblock %}
 
+{% block h1 %}
+Timeline
+{% endblock %}
+
 {% block body %}
-
-
-    <div class="page-header">
-        <h1>
-            Timeline
-<!--            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-                based on widget boxes with 2 different styles
-            </small>-->
-        </h1>
-    </div><!-- /.page-header -->
     <div class="row">
         <div class="col-xs-12">
             <!-- PAGE CONTENT BEGINS -->
@@ -27,7 +20,6 @@
                 <div class="navigation">
                     {{ knp_pagination_render(pagination) }}
                 </div>
-                <hr>
             </div>
             <div id="timeline-1">
                 <div class="row">

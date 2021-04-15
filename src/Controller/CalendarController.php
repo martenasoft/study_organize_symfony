@@ -42,12 +42,13 @@ class CalendarController extends AbstractController
 
         if (empty($calendar)) {
             $calendar = new Calendar();
-            $calendar->setColor('#f2f6f9');
-            $calendar->setTextColor('#646871');
-            $calendar->setIconColor('#4986e7');
-            $calendar->setIconTextColor('#fff');
-            $calendar->setStatus(Calendar::STATUS_ACTIVE);
-            $calendar->setUser($this->getUser());
+            $calendar
+                ->setColor('#f2f6f9')
+                ->setTextColor('#646871')
+                ->setIconColor('#4986e7')
+                ->setIconTextColor('#fff')
+                ->setStatus(Calendar::STATUS_ACTIVE)
+                ->setUser($this->getUser());
         } else {
             $id = $calendar->getId();
         }

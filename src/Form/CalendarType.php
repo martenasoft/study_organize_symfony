@@ -6,7 +6,9 @@ use App\Entity\Calendar;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -27,9 +29,14 @@ class CalendarType extends AbstractType
         }
 
         $builder
-            ->add('title')
+            ->add('title', TextType::class, [
+                'attr' => ['autofocus' => true]
+            ])
             ->add('about', TextareaType::class, [
-                "required" => false
+                "required" => false,
+                'attr' => [
+                    'rows' => 8
+                ]
             ])
             ->add('start', DateType::class, [
                 'widget' => 'single_text',
@@ -80,7 +87,7 @@ class CalendarType extends AbstractType
                 'choice_attr' => ['label' => false],
                 'label' => false
             ])
-            ->add('status')
+            ->add('status', HiddenType::class)
 
         ;
     }

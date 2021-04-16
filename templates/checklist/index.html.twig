@@ -8,7 +8,28 @@
 {% endblock %}
 
 {% block h1 %}
-Checklist
+    Checklist
+{% endblock %}
+
+{% block search_input %}
+    {{ form_start(tagSearchForm) }}
+    <div class="input-group input-group-lg">
+
+        {{ form_widget(tagSearchForm.query, {class: 'form-control search-query"', attr : {placeholder : '#yourtag #sometag / some text'}}) }}
+        <span class="input-group-btn">
+        <button type="submit"
+                class="btn btn-default btn-lg">
+            <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+
+        </button>
+         <a href="{{ path("checklist_index") }}" type="submit" class="btn btn-default btn-lg">
+            <span class="ace-icon glyphicon glyphicon-remove bigger-110"></span>
+
+        </a>
+    </span>
+    </div>
+
+    {{ form_end(tagSearchForm) }}
 {% endblock %}
 
 {% block body %}
@@ -29,44 +50,55 @@ Checklist
 
                     {% for item in pagination %}
 
-                        <div class="message-list" id="message-list">
-                            <div class="message-item message-unread {{ app.request.get('id') == item.id ? 'selected'}} ">
+                        <div class="message-list" id="message-list" >
+                            <div style="{{ item.color is not empty ? 'background:'~item.color~';' }}" class="message-item message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
                                 <label class="inline">
                                     <input type="checkbox"
-                                           {{ item.status == 2 ? 'checked' }}
-                                           onclick="document.location.href = '{{ path('checklist_status', {id:item.id}) }}';"
+                                            {{ item.status == 2 ? 'checked' }}
+                                           onclick="document.location.href = '{{ path('checklist_status', {id:item.id}|merge(app.request.query.all())) }}';"
                                            class="ace"/>
                                     <span class="lbl"></span>
                                 </label>
 
 
-                                <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "  class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}" title="{{ item.title }}">{{ item.title }}</span>
+                                <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "
+                                      class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}"
+                                      title="{{ item.title }}">{{ item.title }}</span>
 
                                 <span class="summary">
-                                    <span style="{{ item.status == 2 ? 'text-decoration: line-through' }} "  class=" {{ item.status == 2 ? 'text-muted' : 'text'}}">
+                                    <span style="{{ item.status == 2 ? 'text-decoration: line-through' }} "
+                                          class=" {{ item.status == 2 ? 'text-muted' : 'text' }}">
                                         {{ item.about }}
                                     </span>
 
                                 </span>
                                 <span class="time">
+
                                     {% if item.status == 1 %}
-                                        <a href="{{ path('checklist_calendar', {id: item.id}) }}" onclick="return confirm('Transfer it to calendar?')">
-                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125" style="padding-right: 10px;"></i>
+                                        <a href="{{ path('checklist_calendar', {id: item.id}) }}"
+                                           onclick="return confirm('Transfer it to calendar?')">
+                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                               style="padding-right: 10px;"></i>
                                         </a>
                                     {% else %}
-                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125" style="padding-right: 10px;"></i>
+                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                           style="padding-right: 10px;"></i>
                                     {% endif %}
-                                    <a href="{{ path('checklist_index', {id: item.id}) }}" ><i class="ace-icon fa fa-pencil blue bigger-125"></i></a>
-                                    <a href="{{ path('checklist_delete', {id: item.id}) }}" onclick="return confirm('Delete item?')">
-                                        <i class="ace-icon fa fa-times red bigger-125"></i>
+                                    <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
+                                                class="ace-icon fa fa-pencil blue bigger-125"></i></a>
+
+                                    {% if item.externalLink is not empty %}
+                                    <a href="{{ item.externalLink }} " target="_blank">
+                                        <i class="ace-icon fa fa-share  red bigger-125"></i>
                                     </a>
+                                    {% endif %}
                                 </span>
                             </div>
                         </div>
                     {% endfor %}
 
                 </div>
-             {% else %}
+            {% else %}
                 {% include 'elements/emty-items.html.twig' %}
             {% endif %}
 
@@ -78,8 +110,14 @@ Checklist
 
         <div class="col-sm-4">
             {{ form_start(form) }}
-            {{ form_row(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.about) }}
+            {{ form_row(form.color) }}
+            {{ form_row(form.hashtag) }}
+            {{ form_row(form.status) }}
 
+            {{ form_row(form.externalLink) }}
+            (https://www.playphrase.me)
             <hr>
             <div class="row">
                 <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
@@ -87,18 +125,29 @@ Checklist
                             class="btn btn-primary ">Save
                     </button>
 
-                    <a href="{{ path("checklist_index") }}" class="btn btn-default">Cancel</a>
+                    <a href="{{ path("checklist_index", app.request.query.all()) }}" class="btn btn-default">Cancel</a>
                 </div>
                 {% if id is not empty %}
                     <div class="col-sm-6">
-                        <a href="{{ path("checklist_delete", {id: id}) }}" class="btn btn-danger pull-right">Delete</a>
+                        <a href="{{ path("checklist_delete", {id: id}|merge(app.request.query.all())) }}"
+                           onclick="return confirm('Delete this item?');"
+                           class="btn btn-danger pull-right">Delete</a>
                     </div>
                 {% endif %}
             </div>
 
-
-
             {{ form_end(form) }}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts_top %}
+    {{ parent() }}
+    <script type="text/javascript">
+        const isTag = {{ id is not empty ? 'false' : 'true' }};
+        const getTagDataUrl = function (query) {
+            return "{{ path('checklist_tags') }}/" + query;
+        }
+
+    </script>
 {% endblock %}

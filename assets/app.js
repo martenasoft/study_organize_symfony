@@ -38,6 +38,7 @@ import './js/ace.min.js';
 import './js/fullcalendar.min.js';
 import './js/bootstrap-colorpicker.min.js';
 
+
 import './bootstrap';
 
 

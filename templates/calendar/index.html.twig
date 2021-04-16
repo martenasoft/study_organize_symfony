@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block h1 %}
-Calendar
+    Calendar
 {% endblock %}
 
 {% block body %}
@@ -37,11 +37,11 @@ Calendar
                 <div class="col-sm-4"> {{ form_row(form.textColor) }}</div>
                 <div class="col-sm-4">  <!-- Button trigger modal -->
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                       <i style="font-size: 1.5pc" class="ace-icon glyphicon glyphicon-picture"></i>
+                        <i style="font-size: 1.5pc" class="ace-icon glyphicon glyphicon-picture"></i>
                         Icons
-                    </button></div>
+                    </button>
+                </div>
             </div>
-
             <hr>
 
             <!-- Modal -->
@@ -86,9 +86,7 @@ Calendar
                     </div>
                 </div>
             </div>
-
             {{ form_row(form.status) }}
-
             <div class="row">
                 <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
                     <button type="submit" id="btn-submit"
@@ -103,8 +101,6 @@ Calendar
                     </div>
                 {% endif %}
             </div>
-
-
             {{ form_end(form) }}
         </div>
     </div>
@@ -114,8 +110,8 @@ Calendar
     {{ parent() }}
     <script type="text/javascript">
 
-        const getDataUrl = function(start, end) {
-            return "{{ path('calendar_get_items') }}/" + start + '/'+end;
+        const getDataUrl = function (start, end) {
+            return "{{ path('calendar_get_items') }}/" + start + '/' + end;
         }
 
         const changeData = function (id, start, end) {

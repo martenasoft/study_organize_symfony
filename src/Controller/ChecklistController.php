@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Calendar;
 use App\Entity\Checklist;
+use App\Entity\TagsSearch;
 use App\Form\ChecklistType;
+use App\Form\TagSearchType;
 use App\Repository\ChecklistRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,20 +32,21 @@ class ChecklistController extends AbstractController
     /**
      * @Route ("/status/{id?}", name="checklist_status")
      */
-    public function status(?Checklist $checklist = null): Response
+    public function status(Request $request, ?Checklist $checklist = null): Response
     {
+
         if ($checklist) {
             $status = $checklist->getStatus();
             $checklist->setStatus($status != 1 ? 1 : 2);
             $this->entityManager->flush();
         }
-        return $this->redirectToRoute("checklist_index");
+        return $this->redirectToRoute("checklist_index", $request->query->all());
     }
 
     /**
      * @Route ("/calendar/{id?}", name="checklist_calendar")
      */
-    public function calendar(?Checklist $checklist = null): Response
+    public function calendar(Request $request, ?Checklist $checklist = null): Response
     {
         if ($checklist) {
             $calendar = new Calendar();
@@ -69,7 +72,6 @@ class ChecklistController extends AbstractController
         return $this->redirectToRoute("checklist_index");
     }
 
-
     /**
      * @Route("/{id?}", name="checklist_index")
      */
@@ -85,21 +87,69 @@ class ChecklistController extends AbstractController
             $id = $checklist->getId();
         }
 
-        $query = $this
+        $queryBuilder = $this
             ->checklistRepository
             ->getQueryBuilderByUser($this->getUser())
             ->orderBy($this->checklistRepository->getAlias().".id", "DESC")
+
         ;
 
-        $pagination = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
+        $queryBuilder1 = clone $queryBuilder;
 
+        $tagSearch = new TagsSearch();
+
+        $q = $request->query->get('q');
+        if (!empty($q)) {
+            $tagSearch->setQuery($q);
+
+            if (substr($q, 0, 1) == '#') {
+                $this
+                    ->checklistRepository
+                    ->findTagQueryBuilder($q, $queryBuilder);
+            } else {
+                $this
+                    ->checklistRepository
+                    ->findByTitleAboutQueryBuilder($q, $queryBuilder);
+            }
+        }
+
+        $tagSearchForm = $this->createForm(TagSearchType::class, $tagSearch);
+        $tagSearchForm->handleRequest($request);
+
+
+        if ($tagSearchForm->isSubmitted() && $tagSearchForm->isValid()) {
+            return $this->redirectToRoute("checklist_index", ["q"=>$tagSearch->getQuery()]);
+        }
+
+        $pagination = $paginator->paginate(
+            $queryBuilder, /* query NOT result */
+            $request->query->getInt('page', 1) /*page number*/
         );
+
         $form = $this->createForm(ChecklistType::class, $checklist);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (preg_match_all('/\#[a-zA-Z-0-9]+/', $checklist->getAbout(), $matches) && !empty($matches[0])) {
+
+
+                $this
+                    ->checklistRepository
+                    ->findTagQueryBuilder($checklist->getAbout(), $queryBuilder1)
+                ;
+
+                $queryBuilder1->getMaxResults(5);
+                $tagsData = $queryBuilder1->getQuery()->getResult();
+
+                if (!empty($tagsData)) {
+                    $about = '';
+                    foreach ($tagsData as $tagsDataItem) {
+                        $about .= (!empty($about) ? ', ' : '') . $tagsDataItem->getTitle();
+                    }
+                    $checklist->setAbout($about);
+                }
+            }
 
             $this->entityManager->persist($checklist);
             $this->entityManager->flush();
@@ -110,20 +160,33 @@ class ChecklistController extends AbstractController
         return $this->render('checklist/index.html.twig', [
             'form' => $form->createView(),
             'pagination' => $pagination,
-            'id' => $id
+            'id' => $id,
+            'tagSearchForm' => $tagSearchForm->createView()
         ]);
     }
+
+
 
     /**
      * @Route ("/delete/{id}/{retTl?}", name="checklist_delete")
      */
-    public function delete(Checklist $checklist, ?int $retTl): Response
+    public function delete(Request $request, Checklist $checklist, ?int $retTl): Response
     {
+
         if (!empty($checklist)) {
             $this->entityManager->remove($checklist);
             $this->entityManager->flush();
         }
 
         return $this->redirectToRoute("checklist_index");
+    }
+
+    /**
+     * @Route ("/tags/{q?}", name="checklist_tags")
+     */
+    public function getTags(?string $q): Response
+    {
+        $ret = $this->checklistRepository->getTags($this->getUser(), $q);
+        return $this->json($ret);
     }
 }

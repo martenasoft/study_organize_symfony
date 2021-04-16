@@ -21,14 +21,13 @@ Timeline
                     {{ knp_pagination_render(pagination) }}
                 </div>
             </div>
+            <div class="space"></div>
             <div id="timeline-1">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
+                        {% if pagination.getTotalItemCount > 0 %}
                         {% set showed = '' %}
-
                         {% for item in pagination.items %}
-
-
                             {% if showed != (item.start | date("Y-m-d")) %}
                                 <div class="timeline-container">
                                     <div class="timeline-label">
@@ -86,7 +85,9 @@ Timeline
                                                         <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                     </a>
 
-                                                    <a href="{{ path('calendar_delete', {id: item_.id, retTl:1}) }}">
+                                                    <a href="{{ path('calendar_delete', {id: item_.id, retTl:1}) }}"
+                                                       onclick="return confirm('Delete this item?');"
+                                                    >
                                                         <i class="ace-icon fa fa-times red bigger-125"></i>
                                                     </a>
 
@@ -95,21 +96,9 @@ Timeline
 
                                                         {% set background = item_.color is not empty ? 'background-color: '~item_.color~'!important;' %}
                                                         {% set textColor = item_.textColor is not empty ? 'color: '~item_.textColor~'!important;' %}
-
-
                                                         <div class="widget-body" style="{{ background ~ textColor }}">
                                                             <div class="widget-main">
                                                                 {{ item_.about }}
-
-                                                                <!--                                                <div class="widget-toolbox clearfix">
-                                                <div class="pull-left">
-                                                    <i style="{{ background ~ textColor }}" class="ace-icon fa fa-hand-o-right grey bigger-125"></i>
-                                                    <a href="#" style="{{ background ~ textColor }}" class="bigger-110">Click to read &hellip;</a>
-                                                </div>
-                                                <div class="pull-right action-buttons">
-
-                                                </div>
-                                            </div>-->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -126,10 +115,13 @@ Timeline
                             {% set showed = (item.start | date("Y-m-d")) %}
 
                         {% endfor %}
+                        {% else %}
+                            {% include 'elements/emty-items.html.twig' %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <hr>
+
             <div class="navigation">
                 {{ knp_pagination_render(pagination) }}
             </div>

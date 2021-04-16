@@ -43,6 +43,12 @@ class Checklist
     private ?string $hashtag = "";
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $externalLink = "";
+
+
+    /**
      * @ORM\Column(type="smallint")
      */
     private int $status;
@@ -123,5 +129,13 @@ class Checklist
         return $this;
     }
 
-
+    public function getExternalLink(): ?string
+    {
+        return $this->externalLink;
+    }
+    public function setExternalLink(?string $externalLink): Checklist
+    {
+        $this->externalLink = $externalLink;
+        return $this;
+    }
 }

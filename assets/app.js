@@ -16,7 +16,13 @@ import './css/ace-rtl.min.css';
 import './css/jquery-ui.custom.min.css';
 import './css/fullcalendar.min.css';
 import './css/bootstrap-colorpicker.min.css';
+import './css/bootstrap-datepicker3.min.css';
+import './css/bootstrap-timepicker.min.css';
+import './css/daterangepicker.min.css';
+import './css/bootstrap-datetimepicker.min.css';
+
 import './css/app.css';
+
 
 const $ = require('jquery');
 global.$ = global.jQuery = $;
@@ -36,7 +42,7 @@ import './js/jquery.flot.resize.min.js';
 import './js/ace-elements.min.js';
 import './js/ace.min.js';
 import './js/fullcalendar.min.js';
-import './js/bootstrap-colorpicker.min.js';
+import './js/daterangepicker.min.js';
 
 
 import './bootstrap';

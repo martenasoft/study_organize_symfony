@@ -63,25 +63,29 @@ Timeline
                                                 <div class="timeline-item clearfix">
                                                     {% if item_.icon is not empty %}
                                                         <div class="timeline-info">
-                                                            <i style="{{ item_.iconColor is not empty ? 'background-color: '~item_.iconColor~'; ' }}
-                                                            {{ item_.iconTextColor is not empty ? 'color: '~item_.iconTextColor~'; ' }}"
+                                                            <i style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; ' : 'background-color: #3A87AD;' }}
+                                                            {{ item_.textColor is not empty ? 'color: '~item_.textColor~'; '  }}"
                                                                class="timeline-indicator ace-icon fa {{ item_.icon }} no-hover">
                                                             </i>
                                                         </div>
                                                     {% endif %}
-
+                                                    <span class="label label-info label-sm">{{ item_.start | date('H:m') }}</span>
                                                     <div class="widget-box transparent">
                                                         <div class="widget-header widget-header-small">
                                                             <h5 class="widget-title smaller">
-                                                                <a href="#" class="blue">{{ item_.title }}</a>
-
+                                                                <a href="{{ path('calendar_show', {
+                                                                    id: item.calendar.id,
+                                                                    item: item.id
+                                                                }) }}" class="blue">{{ item_.title }}</a>
                                                             </h5>
-
                                                             <span class="widget-toolbar">
-                                                              <a href="{{ path("timeline_status", {id: item_.id, status: item_.status}) }}">
+                                                              <a href="{{ path("timeline_status", {id: item_.id}) }}">
                                                         <i class="ace-icon fa fa-check green bigger-130"></i>
                                                     </a>
-                                                    <a href="{{ path("calendar_index", {id: item_.id}) }}">
+                                                    <a href="{{ path("calendar_show", {
+                                                        id: item_.calendar.id,
+                                                        item: item.id
+                                                    }) }}">
                                                         <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                     </a>
 
@@ -98,6 +102,7 @@ Timeline
                                                         {% set textColor = item_.textColor is not empty ? 'color: '~item_.textColor~'!important;' %}
                                                         <div class="widget-body" style="{{ background ~ textColor }}">
                                                             <div class="widget-main">
+                                                                {{ item_.status }}
                                                                 {{ item_.about }}
                                                             </div>
                                                         </div>
@@ -128,4 +133,19 @@ Timeline
             <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
     </div><!-- /.row -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        const isEditable = function () {
+            return false;
+        }
+
+        const isDroppable = function () {
+            return false;
+        }
+
+    </script>
 {% endblock %}

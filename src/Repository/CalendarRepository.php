@@ -40,12 +40,6 @@ class CalendarRepository extends ServiceEntityRepository
         return $ret;
     }
 
-    public function getLoadItems(User $user, \DateTimeInterface $start, \DateTimeInterface $end): QueryBuilder
-    {
-        return $this
-            ->getQueryBuilderByUser($user)
-            ->andWhere($this->getAlias() . '.start>:date1')->setParameter('date1', $start)
-            ->andWhere($this->getAlias() . '.start<=:date2')->setParameter('date2', $end);
-    }
+
 
 }

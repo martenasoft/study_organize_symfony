@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CalendarItem index{% endblock %}
+
+{% block body %}
+    <h1>CalendarItem index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Title</th>
+                <th>About</th>
+                <th>Icon</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>DeletedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for calendar_item in calendar_items %}
+            <tr>
+                <td>{{ calendar_item.id }}</td>
+                <td>{{ calendar_item.start ? calendar_item.start|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ calendar_item.end ? calendar_item.end|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ calendar_item.title }}</td>
+                <td>{{ calendar_item.about }}</td>
+                <td>{{ calendar_item.icon }}</td>
+                <td>{{ calendar_item.createdAt ? calendar_item.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ calendar_item.updatedAt ? calendar_item.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ calendar_item.deletedAt ? calendar_item.deletedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('calendar_item_show', {'id': calendar_item.id}) }}">show</a>
+                    <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('calendar_item_new') }}">Create new</a>
+{% endblock %}

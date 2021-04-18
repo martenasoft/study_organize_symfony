@@ -9,117 +9,124 @@
 {% endblock %}
 
 {% block h1 %}
-    Calendar
+    Mailbox
+
 {% endblock %}
+
+{% block search_input %}
+    <a href="{{ path('calendar_new') }}" class="btn btn-app btn-info btn-sm no-radius pull-right">
+        <i class="ace-icon fa fa-plus bigger-100"></i>
+        Create
+    </a>
+{% endblock %}
+
 
 {% block body %}
 
-    <div class="row">
-        <div class="col-sm-8">
+<div class="row">
+    <div class="col-sm-8">
 
-            <div class="space"></div>
+        <div class="space"></div>
 
-            <div id="calendar"></div>
-        </div>
-
-        <div class="col-sm-4">
-            {{ form_start(form) }}
-            {{ form_row(form.title) }}
-            {{ form_row(form.about) }}
-            <div class="row">
-                <div class="col-sm-6">{{ form_row(form.start) }}</div>
-                <div class="col-sm-6"> {{ form_row(form.end) }}</div>
-            </div>
-
-            <hr>
-            <div class="row">
-                <div class="col-sm-4">{{ form_row(form.color) }}</div>
-                <div class="col-sm-4"> {{ form_row(form.textColor) }}</div>
-                <div class="col-sm-4">  <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                        <i style="font-size: 1.5pc" class="ace-icon glyphicon glyphicon-picture"></i>
-                        Icons
-                    </button>
-                </div>
-            </div>
-            <hr>
-
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Icons</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="control-group">
-                                <div class="bootstrap-colorpicker">
-                                    {{ form_row(form.iconColor) }}
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <div class="bootstrap-colorpicker">
-                                    {{ form_row(form.iconTextColor) }}
-                                </div>
-                            </div>
-                            <div class="row" style=" height: 200px;  overflow: auto;">
-                                {% for item_ch in form.icon %}
-                                    <div class="col-sm-2">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <i style="font-size: 25px"
-                                                   class="ace-icon fa {{ item_ch.vars.value }}"></i>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                {{ form_row(item_ch, {label:false}) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{ form_row(form.status) }}
-            <div class="row">
-                <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
-                    <button type="submit" id="btn-submit"
-                            class="btn btn-primary ">Save
-                    </button>
-
-                    <a href="{{ path("calendar_index") }}" class="btn btn-default">Cancel</a>
-                </div>
-                {% if id is not empty %}
-                    <div class="col-sm-6">
-                        <a href="{{ path("calendar_delete", {id: id}) }}" class="btn btn-danger pull-right">Delete</a>
-                    </div>
-                {% endif %}
-            </div>
-            {{ form_end(form) }}
-        </div>
+        <div id="calendar_js"></div>
     </div>
+    <div class="col-sm-4">
+        <div class="widget-box transparent">
+            <div class="widget-header widget-header-small">
+                <h4 class="widget-title blue smaller">
+                    <i class="ace-icon fa fa-rss orange"></i>
+                    Recent Activities
+                </h4>
+
+                <div class="widget-toolbar action-buttons">
+                    <a href="#" data-action="reload">
+                        <i class="ace-icon fa fa-refresh blue"></i>
+                    </a>
+                    &nbsp;
+                    <a href="#" class="pink">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="widget-body">
+                <div class="widget-main padding-8">
+                    <div id="profile-feed-1" class="profile-feed ace-scroll" style="position: relative;">
+                        <div class="scroll-track scroll-active" style="display: block; height: 600px;">
+                            <div class="scroll-bar" style="height: 62px; top: 138px;">
+                            </div></div><div class="scroll-content" style="max-height: 600px;">
+                            {% for index,calendar in calendars %}
+                            <form action="" method="get" id="calendar_form_items">
+                            <div class="profile-activity clearfix">
+                                <div>
+                                    <img class="pull-left" alt="Susan Smith's avatar" src="{{  asset('build/images/avatars/avatar1.png') }}">
+                                    <a class="user" href="#"> {{ calendar.user.email}} </a>
+                                    <div>
+                                        <input type="checkbox"
+                                                name="show_calendar[]"
+                                                class="ace ace-checkbox-2 ace-save-state select_calendar"
+                                                {% if (app.request.get('show_calendar') is empty and loop.index == 1)
+                                                    or calendar.id in app.request.get('show_calendar')  %}
+                                                    checked
+                                                {% endif %}
+                                                value="{{ calendar.id }}" id="ace-settings-navbar_{{ index }}" autocomplete="off" />
+                                        <label class="lbl" for="ace-settings-navbar_{{ index }}"> {{ calendar.title }}</label>
+                                    </div>
+                                    <div class="time">
+                                        <i class="ace-icon fa fa-clock-o bigger-110"></i>
+                                        2 hours ago
+                                    </div>
+                                </div>
+
+                                <div class="tools action-buttons">
+                                    <a href="{{ path('calendar_show', {id:calendar.id}) }}" class="blue">
+                                        <i class="ace-icon fa fa-pencil bigger-125"></i>
+                                    </a>
+
+
+                                </div>
+                            </div>
+                            {% endfor %}
+                            </form>
+                        </div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 
-{% block javascripts_top %}
+{% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
 
         const getDataUrl = function (start, end) {
-            return "{{ path('calendar_get_items') }}/" + start + '/' + end;
+            let calendarId = '';
+            $('#calendar_form_items input[type=checkbox]').each(function() {
+                if (this.checked) {
+                    calendarId += (calendarId == '' ? '?' : '&') + 'calendarId[]=' + $(this).val();
+                }
+            });
+            return "{{ path('calendar_items_ajax' ) }}"+calendarId+"&start=" + start + '&end=' + end;
         }
 
         const changeData = function (id, start, end) {
-            window.location.href = "{{ path('calendar_change_data') }}/" + id + "/" + start + "/" + end;
+            window.location.href = "{{ path('calendar_item_change_data') }}/" + id + "/" + start + "/" + end;
         };
-        const redirectToEdit = function (id) {
-            window.location.href = "{{ path('calendar_index') }}/" + id;
+        const redirectToEdit = function (calendarId, id) {
+            window.location.href = "{{ path('calendar_show') }}/" + calendarId + "/" + id;
+
         };
+
+        const isEditable = function () {
+            return true;
+        }
+
+        const isDroppable = function () {
+            return false;
+        }
+
 
     </script>
 {% endblock %}

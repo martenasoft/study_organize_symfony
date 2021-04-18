@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{{ path('calendar_index') }}">Calendar </a></li>
+    <li>{{ calendar.title }}</li>
+
+{% endblock %}
+
+{% block h1 %}
+    Calendar
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-8">
+
+            <div class="space"></div>
+
+            <div id="calendar_js"></div>
+        </div>
+
+        <div class="col-sm-4">
+            {{ form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.about) }}
+            <div class="form-group {{ form.dateRange.vars.valid == false ?  'has-error' }}">
+                {{ form_label(form.dateRange) }}
+                <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar bigger-110"></i>
+                </span>
+                    {{ form_widget(form.dateRange) }}
+                </div>
+                {{ form_errors(form.dateRange) }}
+            </div>
+
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                        <i style="font-size: 1.5pc" class="ace-icon glyphicon glyphicon-picture"></i>
+                        Icons
+                    </button>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Icons</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="control-group">
+                                <div class="bootstrap-colorpicker">
+                                    {{ form_row(form.color) }}
+
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="bootstrap-colorpicker">
+                                    {{ form_row(form.textColor) }}
+                                </div>
+                            </div>
+                            <div class="row" style=" height: 200px;  overflow: auto;">
+                                {% for item_ch in form.icon %}
+                                    <div class="col-sm-2">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <i style="font-size: 25px"
+                                                   class="ace-icon fa {{ item_ch.vars.value }}"></i>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {{ form_row(item_ch, {label:false}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
+                    <button type="submit" id="btn-submit"
+                            class="btn btn-primary ">Save
+                    </button>
+
+                    <a href="{{ path("calendar_show", {id: calendarId}) }}" class="btn btn-default">Cancel</a>
+                </div>
+                {% if id is not empty %}
+                    <div class="col-sm-6">
+                        <a href="{{ path("move_calendar_item_to_bin", {id: id}) }}"
+                           onclick="return confirm('Delete item?')"
+                           class="btn btn-danger pull-right">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        const getDataUrl = function (start, end) {
+
+            return "{{ path('calendar_items_ajax', {calendarId:calendarId}) }}&start=" + start + '&end=' + end;
+        }
+
+        const changeData = function (id, start, end) {
+            window.location.href = "{{ path('calendar_item_change_data') }}/" + id + "/" + start + "/" + end;
+        };
+        const redirectToEdit = function (id) {
+            window.location.href = "{{ path('calendar_show', {id:calendarId}) }}/" + id;
+        };
+
+
+        const isEditable = function () {
+            return true;
+        }
+
+        const isDroppable = function () {
+            return true;
+        }
+
+    </script>
+{% endblock %}

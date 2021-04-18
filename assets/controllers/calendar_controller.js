@@ -2,14 +2,29 @@ jQuery(function ($) {
     /* initialize the external events
         -----------------------------------------------------------------*/
 
-    const dateFormat = 'yyyy-mm-dd';
+    const dateFormat = 'DD/MM/yyyy HH:MM';
+    const dateFormat2 = 'yyyy-mm-dd';
+
     $('.date-picker').datepicker({
         autoclose: true,
         todayHighlight: true,
-        format: dateFormat
+        format: dateFormat2
     });
 
-    const getGateFormat = function (date) {
+
+    $('#calendar_item_dateRange').daterangepicker({
+        'applyClass' : 'btn-sm btn-success',
+        'cancelClass' : 'btn-sm btn-default',
+        opens: 'left',
+        timePicker: true,
+        locale: {
+            format: 'DD/MM/YYYY hh:mm',
+            applyLabel: 'Apply',
+            cancelLabel: 'Cancel',
+        }
+    })
+
+    const getDateFormat = function (date) {
         const mm = date._d.getMonth() + 1;
         const dd = date._d.getDate();
         return date._d.getFullYear()+'-'+(mm < 10 ? '0' : '')+ mm+'-'+(dd < 10 ? '0' : '') + dd;
@@ -24,16 +39,8 @@ jQuery(function ($) {
         $('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+
             '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
     }
+    $('#calendar_color, #calendar_textColor, #calendar_item_color, #calendar_item_textColor').ace_colorpicker();
 
-
-   /* var str = '';
-    $('.list-unstyled li').each(function() {
-        str += '"' + $(this).find('i').attr('class').replace('ace-icon glyphicon ', '') + '",' +"\n" ;
-    });
-    console.log(str);*/
-    $('#calendar_color, #calendar_textColor, #calendar_iconColor, #calendar_iconTextColor').ace_colorpicker();
-
-  //  if (typeof window['calendarEvents'] !== undefined) {
 
         $('#external-events div.external-event').each(function () {
             var eventObject = {
@@ -56,8 +63,7 @@ jQuery(function ($) {
         /* initialize the calendar
         -----------------------------------------------------------------*/
 
-
-        var calendar = $('#calendar').fullCalendar({
+        const calendar = $('#calendar_js').fullCalendar({
             //isRTL: true,
             //firstDay: 1,// >> change first day of week
             height: 680,
@@ -70,19 +76,19 @@ jQuery(function ($) {
             header: {
                 left: 'prev,next today',
                 center: 'title',
-            //    right: 'month,agendaWeek,agendaDay'
+                right: 'month,agendaWeek,agendaDay'
             },
             //events: calendarEvents,
             events: function (start, end, timezone, callback) {
-                $.get(getDataUrl(getGateFormat(start), getGateFormat(end)), callback);
+                $.get(getDataUrl(getDateFormat(start), getDateFormat(end)), callback);
             },
 
             eventResize: function (event, delta, revertFunc) {
                 changeData(event.id, event.start.format(), event.end.format());
             },
 
-            editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar !!!
+            editable:  isEditable(),
+            droppable: isDroppable(), // this allows things to be dropped onto the calendar !!!
             eventDrop: function(event) {
                 changeData(event.id, event.start.format(), event.end.format());
             },
@@ -118,20 +124,21 @@ jQuery(function ($) {
             selectable: true,
             selectHelper: true,
             select: function (start, end, allDay) {
-                $("#calendar_title").val('');
-                $("#calendar_start").val(start.format(dateFormat));
-                $("#calendar_end").val(end.format(dateFormat));
+                $("#calendar_item_title").val('');
+
+                const date_ = start.format(dateFormat)+' - '+end.format(dateFormat);
+                $("#calendar_item_dateRange").val(date_);
                 $("#btn-submit").removeAttr('disabled').removeClass('disabled');
                 //calendar.fullCalendar('unselect');
             }
             ,
             eventClick: function (calEvent, jsEvent, view) {
-                redirectToEdit(calEvent.id);
-
-
+                redirectToEdit(calEvent.calendar_id, calEvent.id);
             }
-
         });
-   // }
+
+        $('.select_calendar').off('click').on('click', function() {
+            $('#calendar_js').fullCalendar('refetchEvents');
+        });
 
 })

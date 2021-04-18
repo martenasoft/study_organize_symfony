@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Controller\Traits\TraitGetCalendarItems;
 use App\Controller\Traits\TraitGetCalendarRepository;
 use App\Entity\Calendar;
+use App\Entity\CalendarItem;
+use App\Entity\Interfaces\StatusInterface;
+use App\Repository\CalendarItemRepository;
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -21,10 +24,11 @@ class TimelineController extends AbstractController
     use TraitGetCalendarRepository, TraitGetCalendarItems;
 
     private EntityManagerInterface $entityManager;
+    private CalendarItemRepository $calendarItemRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, CalendarRepository $calendarRepository)
+    public function __construct(EntityManagerInterface $entityManager, CalendarItemRepository $calendarItemRepository)
     {
-        $this->calendarRepository = $calendarRepository;
+        $this->calendarItemRepository = $calendarItemRepository;
         $this->entityManager = $entityManager;
     }
 
@@ -34,10 +38,9 @@ class TimelineController extends AbstractController
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
         //$this->isActiveOnly(false);
-
-
         $query = $this
-            ->getCalendarQueryBuilder($this->getUser())
+            ->calendarItemRepository
+            ->getLoadItems()
             ->getQuery();
 
         $pagination= $paginator->paginate(
@@ -53,15 +56,15 @@ class TimelineController extends AbstractController
     }
 
     /**
-     * @Route("/status/{id}/{status}", name="timeline_status")
+     * @Route("/status/{id}", name="timeline_status")
      */
-    public function status(Calendar $calendar, int $status): Response
+    public function status(CalendarItem $calendarItem): Response
     {
-
-        $calendar
-            ->setStatus($status == Calendar::STATUS_ACTIVE ? Calendar::STATUS_DONE : Calendar::STATUS_ACTIVE)
-            ->setChangedStatus(new \DateTime('now'));
-        ;
+        $status = $calendarItem->getStatus();
+        $calendarItem
+            ->setStatus($status == StatusInterface::STATUS_ACTIVE ?
+                            StatusInterface::STATUS_DONE : StatusInterface::STATUS_ACTIVE)
+            ->setUpdatedAt(new \DateTime('now'));
 
         $this->entityManager->flush();
         return $this->redirectToRoute("timeline_index");

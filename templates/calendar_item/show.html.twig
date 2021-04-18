@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CalendarItem{% endblock %}
+
+{% block body %}
+    <h1>CalendarItem</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ calendar_item.id }}</td>
+            </tr>
+            <tr>
+                <th>Start</th>
+                <td>{{ calendar_item.start ? calendar_item.start|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>End</th>
+                <td>{{ calendar_item.end ? calendar_item.end|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ calendar_item.title }}</td>
+            </tr>
+            <tr>
+                <th>About</th>
+                <td>{{ calendar_item.about }}</td>
+            </tr>
+            <tr>
+                <th>Icon</th>
+                <td>{{ calendar_item.icon }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ calendar_item.createdAt ? calendar_item.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ calendar_item.updatedAt ? calendar_item.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DeletedAt</th>
+                <td>{{ calendar_item.deletedAt ? calendar_item.deletedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('calendar_item_index') }}">back to list</a>
+
+    <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
+
+    {{ include('calendar_item/_delete_form.html.twig') }}
+{% endblock %}

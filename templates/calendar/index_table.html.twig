@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block breadcrumbs %}
+    <li>
+        Calendar
+    </li>
+{% endblock %}
+
+{% block h1 %}
+    Calendar
+{% endblock %}
+
+{% block body %}
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Color</th>
+                <th>TextColor</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for calendar in calendars %}
+            <tr>
+                <td>{{ calendar.title }}</td>
+                <td>{{ calendar.status }}</td>
+                <td>{{ calendar.color }}</td>
+                <td>{{ calendar.textColor }}</td>
+                <td>
+                    <a href="{{ path('calendar_show', {'id': calendar.id}) }}">show</a>
+                    <a href="{{ path('calendar_edit', {'id': calendar.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('calendar_new') }}">Create new</a>
+{% endblock %}

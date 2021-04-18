@@ -36,68 +36,84 @@
 
     <div class="row">
         <div class="col-sm-8">
-            <div class="">
-                <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
-                <div class="navigation">
-                    {{ knp_pagination_render(pagination) }}
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
+                    <div class="navigation">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="btn-group">
+
+                        {% for i in 1..3 %}
+                            {% set disabled = (app.request.query.get('show-as') is empty and i == 1) or app.request.query.get('show-as') == i ? 'disabled' %}
+                            <a href="{{ path('checklist_index', {'show-as': i} | merge( app.request.query.all() | filter((k,v) => v != 'show-as'))) }}"
+                                    {{ disabled }} type="button" class="btn {{ disabled }}">{{ i }}</a>
+
+                        {% endfor %}
+
+                    </div>
                 </div>
             </div>
 
             <div class="space"></div>
-
             {% if pagination.getTotalItemCount > 0 %}
-                <div class="message-list-container">
-
+                <div class="row">
                     {% for item in pagination %}
-
-                        <div class="message-list" id="message-list" >
-                            <div style="{{ item.color is not empty ? 'background:'~item.color~';' }}" class="message-item message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
-                                <label class="inline">
-                                    <input type="checkbox"
-                                            {{ item.status == 2 ? 'checked' }}
-                                           onclick="document.location.href = '{{ path('checklist_status', {id:item.id}|merge(app.request.query.all())) }}';"
-                                           class="ace"/>
-                                    <span class="lbl"></span>
-                                </label>
-
-
-                                <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "
-                                      class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}"
-                                      title="{{ item.title }}">{{ item.title }}</span>
-
-                                <span class="summary">
+                        <div class="col-sm-{{ 12 / app.request.query.get('show-as', 1) }}">
+                            <table width="100%" class="table " border="0">
+                                <tr style="{{ item.color is not empty ? 'background:'~item.color~';' }}"
+                                    class=" message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
+                                    <td width="3%">
+                                        <input type="checkbox"
+                                                {{ item.status == 2 ? 'checked' }}
+                                               onclick="document.location.href = '{{ path('checklist_status', {id:item.id}|merge(app.request.query.all())) }}';"
+                                               class="ace"/>
+                                        <span class="lbl"></span>
+                                    </td>
+                                    <td width="30%">
+                                     <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "
+                                           class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}"
+                                           title="{{ item.title }}">{{ item.title }}</span>
+                                    </td>
+                                    <td width="55%">
                                     <span style="{{ item.status == 2 ? 'text-decoration: line-through' }} "
                                           class=" {{ item.status == 2 ? 'text-muted' : 'text' }}">
                                         {{ item.about }}
                                     </span>
+                                    </td>
+                                    <td width="10%">
+                                        <div class="pull-right">
 
-                                </span>
-                                <span class="time">
+                                            {% if item.status == 1 %}
+                                                <a href="{{ path('checklist_calendar', {id: item.id}) }}"
+                                                   onclick="return confirm('Transfer it to calendar?')">
+                                                    <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                                       style="padding-right: 10px;"></i>
+                                                </a>
+                                            {% else %}
+                                                <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                                   style="padding-right: 10px;"></i>
+                                            {% endif %}
+                                            <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
+                                                        class="ace-icon fa fa-pencil blue bigger-125"></i></a>
 
-                                    {% if item.status == 1 %}
-                                        <a href="{{ path('checklist_calendar', {id: item.id}) }}"
-                                           onclick="return confirm('Transfer it to calendar?')">
-                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
-                                               style="padding-right: 10px;"></i>
-                                        </a>
-                                    {% else %}
-                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
-                                           style="padding-right: 10px;"></i>
-                                    {% endif %}
-                                    <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
-                                                class="ace-icon fa fa-pencil blue bigger-125"></i></a>
-
-                                    {% if item.externalLink is not empty %}
-                                    <a href="{{ item.externalLink }} " target="_blank">
-                                        <i class="ace-icon fa fa-share  red bigger-125"></i>
-                                    </a>
-                                    {% endif %}
-                                </span>
-                            </div>
+                                            {% if item.externalLink is not empty %}
+                                                <a href="{{ item.externalLink }} " target="_blank">
+                                                    <i class="ace-icon fa fa-share  red bigger-125"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     {% endfor %}
-
                 </div>
+
             {% else %}
                 {% include 'elements/emty-items.html.twig' %}
             {% endif %}
@@ -144,6 +160,15 @@
 {% block javascripts_top %}
     {{ parent() }}
     <script type="text/javascript">
+
+        const isEditable = function () {
+            return false;
+        }
+
+        const isDroppable = function () {
+            return false;
+        }
+
         const isTag = {{ id is not empty ? 'false' : 'true' }};
         const getTagDataUrl = function (query) {
             return "{{ path('checklist_tags') }}/" + query;

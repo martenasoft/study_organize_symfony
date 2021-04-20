@@ -28,7 +28,11 @@ return new class extends DefaultDeployer {
     public function beforeFinishingDeploy()
     {
         $this->runRemote('composer install');
-        $this->runRemote('{{ project_dir }}/bin/console doctrine:migrations:migrate --no-interaction');
+        $this->runRemote('{{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
+        $this->runRemote('{{ deploy_dir }}/current/bin/console cache:clear --env=prod');
+        $this->runRemote('{{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
+        $this->runRemote('{{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
+        $this->runRemote('{{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
         // $this->runRemote('{{ console_bin }} app:my-task-name');
         // $this->runLocal('say "The deployment has finished."');
     }

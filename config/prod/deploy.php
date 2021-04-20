@@ -21,22 +21,21 @@ return new class extends DefaultDeployer {
     public function beforePreparing()
     {
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ project_dir }}/.env');
-        $this->runRemote('composer install --no-progress');
-        $this->runRemote('echo "=========| RUN DEPLOY |===================="');
-        $this->runRemote('echo "php {{ deploy_dir }}/repo/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
-        $this->runRemote('php {{ deploy_dir }}/repo/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
-        $this->runRemote('php {{ deploy_dir }}/repo/bin/console cache:clear --env=prod');
-        $this->runRemote('php {{ deploy_dir }}/repo/bin/console doctrine:cache:clear-metadata --env=prod');
-        $this->runRemote('php {{ deploy_dir }}/repo/bin/console doctrine:cache:clear-query --env=prod');
-        $this->runRemote('php {{ deploy_dir }}/repo/bin/console doctrine:cache:clear-result --env=prod');
-
-        //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.local {{ project_dir }}/.env.local');
+     //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.local {{ project_dir }}/.env.local');
     }
 
     // run some local or remote commands after the deployment is finished
     public function beforeFinishingDeploy()
     {
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ deploy_dir }}/.env');
+      //  $this->runRemote('composer install --no-progress');
+        $this->runRemote('echo "=========| RUN DEPLOY |===================="');
+        $this->runRemote('echo "php {{ deploy_dir }}/repo/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console cache:clear --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
         // $this->runRemote('{{ console_bin }} app:my-task-name');
         // $this->runLocal('say "The deployment has finished."');
     }

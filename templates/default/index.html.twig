@@ -16,6 +16,7 @@
     <div class="well">
         <h4 class="green smaller lighter">Hello! I can help you to study something.</h4>
         {% if app.user is empty %}
+            {{ "" | date('d/m/Y H:i') }}
             <a href="{{ path("app_login") }}">Go Login</a> Or
             <a href="{{ path("app_register") }}">Go Registration</a>
         {% else %}

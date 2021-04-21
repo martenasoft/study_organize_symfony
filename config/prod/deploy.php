@@ -35,6 +35,7 @@ return new class extends DefaultDeployer {
       //  $this->runRemote('composer install --no-progress');
         $this->runRemote('echo "=========| RUN DEPLOY |===================="');
         $this->runRemote('echo "php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
+        //$this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:sync-metadata-storage --no-interaction --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console cache:clear --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');

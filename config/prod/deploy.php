@@ -7,7 +7,7 @@ return new class extends DefaultDeployer {
     public function configure()
     {
         return $this->getConfigBuilder()
-            ->composerInstallFlags('--no-dev')
+           // ->composerInstallFlags('--no-dev')
             //->symfonyEnvironment('prod')
             ->remoteComposerBinaryPath('/usr/bin/composer')
             // SSH connection string to connect to the remote server (format: user@host-or-IP:port-number)
@@ -24,6 +24,7 @@ return new class extends DefaultDeployer {
     {
         $this->runRemote('echo "======== ENV: $APP_ENV ============="');
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ project_dir }}/.env');
+        $this->runRemote('cp {{ deploy_dir }}/repo/.env.prod {{ project_dir }}/.env.prod');
      //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.local {{ project_dir }}/.env.local');
     }
 
@@ -32,13 +33,13 @@ return new class extends DefaultDeployer {
     {
       //  $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ deploy_dir }}/.env');
       //  $this->runRemote('composer install --no-progress');
-       # $this->runRemote('echo "=========| RUN DEPLOY |===================="');
-       # $this->runRemote('echo "php {{ deploy_dir }}/repo/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
-       # $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
-       # $this->runRemote('php {{ deploy_dir }}/current/bin/console cache:clear --env=prod');
-       # $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
-       # $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
-       # $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
+        $this->runRemote('echo "=========| RUN DEPLOY |===================="');
+        $this->runRemote('echo "php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console cache:clear --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
+        $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
         // $this->runRemote('{{ console_bin }} app:my-task-name');
         // $this->runLocal('say "The deployment has finished."');
     }

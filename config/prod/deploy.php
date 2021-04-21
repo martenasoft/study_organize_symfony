@@ -7,8 +7,9 @@ return new class extends DefaultDeployer {
     public function configure()
     {
         return $this->getConfigBuilder()
-            ->composerInstallFlags('--no-dev')
+           // ->composerInstallFlags('--no-dev')
             //->symfonyEnvironment('prod')
+               ->fixPermissionsWithChgrp('www-data')
             ->remoteComposerBinaryPath('/usr/bin/composer')
             // SSH connection string to connect to the remote server (format: user@host-or-IP:port-number)
             ->server(' kostiagm@92.205.24.68')
@@ -24,6 +25,7 @@ return new class extends DefaultDeployer {
     {
         $this->runRemote('echo "======== ENV: $APP_ENV ============="');
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ project_dir }}/.env');
+       // $this->runRemote('cp {{ project_dir }}/repo/public/build {{ deploy_dir }}/public/build');
      //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.prod {{ project_dir }}/.env.prod');
      //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.local {{ project_dir }}/.env.local');
     }

@@ -7,7 +7,7 @@ return new class extends DefaultDeployer {
     public function configure()
     {
         return $this->getConfigBuilder()
-           // ->composerInstallFlags('')
+            ->composerInstallFlags('--no-dev')
             //->symfonyEnvironment('prod')
             ->remoteComposerBinaryPath('/usr/bin/composer')
             // SSH connection string to connect to the remote server (format: user@host-or-IP:port-number)

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Checklist;
 use App\Entity\User;
+use App\Repository\Traits\TraitRepositoryByUserAndItemsIdsQueryBuilder;
 use App\Repository\Traits\TraitRepositoryGetFindTagsQueryBuilder;
 use App\Repository\Traits\TraitRepositoryGetQueryBuilderByUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -12,7 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class ChecklistRepository extends ServiceEntityRepository
 {
-    use TraitRepositoryGetQueryBuilderByUser, TraitRepositoryGetFindTagsQueryBuilder;
+    use TraitRepositoryGetFindTagsQueryBuilder,
+        TraitRepositoryByUserAndItemsIdsQueryBuilder;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -22,10 +24,11 @@ class ChecklistRepository extends ServiceEntityRepository
 
     public function getItemsByIds(User $user, ?array $items = []): ?array
     {
+        if (empty($items)) {
+            return null;
+        }
         return $this
-            ->getQueryBuilderByUser($user)
-            ->andWhere($this->getAlias().".id IN (:id)")
-            ->setParameter("id", $items)
+            ->getItemsByUserAndItemsIds($user, $items)
             ->getQuery()
             ->getResult();
     }

@@ -8,15 +8,17 @@
 
 {% endblock %}
 
+{% block search_input %}
+    {% include 'calendar/new_calendar_button.html.twig' %}
+{% endblock %}
+
 {% block h1 %}
-    Calendar
+    Calendar ({{ calendar.title }})
 {% endblock %}
 
 {% block body %}
-
     <div class="row">
         <div class="col-sm-8">
-
             <div class="space"></div>
 
             <div id="calendar_js"></div>

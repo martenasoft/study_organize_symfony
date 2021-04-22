@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Calendar;
 use App\Entity\User;
+use App\Repository\Traits\TraitRepositoryByUserAndItemsIdsQueryBuilder;
 use App\Repository\Traits\TraitRepositoryGetQueryBuilderByUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -12,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class CalendarRepository extends ServiceEntityRepository
 {
-    use TraitRepositoryGetQueryBuilderByUser;
+    use TraitRepositoryByUserAndItemsIdsQueryBuilder;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -39,7 +40,4 @@ class CalendarRepository extends ServiceEntityRepository
         }
         return $ret;
     }
-
-
-
 }

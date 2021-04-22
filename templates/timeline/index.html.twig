@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block h1 %}
-Timeline
+    Timeline
 {% endblock %}
 
 {% block body %}
@@ -27,100 +27,98 @@ Timeline
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
                         {% if pagination.getTotalItemCount > 0 %}
-                        {% set showed = '' %}
-                        {% for item in pagination.items %}
-                            {% if showed != (item.start | date("Y-m-d")) %}
-                                <div class="timeline-container">
-                                    <div class="timeline-label">
-
-                                        {% set date_t = item.start | date('Y-m-d') %}
-                                        {% if date_t == "" | date('Y-m-d') %}
-                                            <span class="label label-success arrowed-in-right label-lg">
+                            {% set showed = '' %}
+                            {% set showed2 = '' %}
+                            {% for item in pagination.items %}
+                                {% if showed != (item.start | date("Y-m-d")) %}
+                                    <div class="timeline-container">
+                                        <div class="timeline-label">
+                                            {% set date_t = item.start | date('Y-m-d') %}
+                                            {% if date_t == "" | date('Y-m-d') %}
+                                                <span class="label label-success arrowed-in-right label-lg">
                                             <b>Today</b>
                                         </span>
-                                        {% elseif date_t == "" | date_modify("+1 day") |date('Y-m-d') %}
-                                            <span class="label label-yellow arrowed-in-right label-lg">
+                                            {% elseif date_t == "" | date_modify("+1 day") |date('Y-m-d') %}
+                                                <span class="label label-yellow arrowed-in-right label-lg">
                                             <b>Tomorrow</b>
                                         </span>
-                                        {% elseif date_t == "" | date_modify("-1 day") |date('Y-m-d') %}
-                                            <span class="label label-default arrowed-in-right label-lg">
+                                            {% elseif date_t == "" | date_modify("-1 day") |date('Y-m-d') %}
+                                                <span class="label label-default arrowed-in-right label-lg">
                                             <b>Yesterday</b>
                                         </span>
-                                        {% else %}
-                                            <span class="label label-primary arrowed-in-right label-lg">
+                                            {% else %}
+                                                <span class="label label-primary arrowed-in-right label-lg">
                                             <b>{{ item.start | date('d/m/Y') }}</b>
                                          </span>
-                                        {% endif %}
+                                            {% endif %}
 
-                                    </div>
-                                    {% for item_ in pagination.items %}
+                                        </div>
+                                        {% for item_ in pagination.items %}
 
-                                        {% set sDate = item_.start | date("U") %}
-                                        {% set sEnd = item_.start | date("U") %}
-                                        {% set dDate = item.start | date("U") %}
+                                            {% set sDate = item_.start | date("Y-m-d") %}
+                                            {% set sEnd = item_.start | date("Y-m-d") %}
+                                            {% set dDate = item.start | date("Y-m-d") %}
 
-                                        {% if sDate >= dDate and sEnd <= dDate %}
-                                            <div class="timeline-items">
-                                                <div class="timeline-item clearfix">
-                                                    {% if item_.icon is not empty %}
-                                                        <div class="timeline-info">
-                                                            <i style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; ' : 'background-color: #3A87AD;' }}
-                                                            {{ item_.textColor is not empty ? 'color: '~item_.textColor~'; '  }}"
-                                                               class="timeline-indicator ace-icon fa {{ item_.icon }} no-hover">
-                                                            </i>
-                                                        </div>
-                                                    {% endif %}
-                                                    <span class="label label-info label-sm">{{ item_.start | date('H:m') }}</span>
-                                                    <div class="widget-box transparent">
-                                                        <div class="widget-header widget-header-small">
-                                                            <h5 class="widget-title smaller">
-                                                                <a href="{{ path('calendar_show', {
-                                                                    id: item.calendar.id,
-                                                                    item: item.id
-                                                                }) }}" class="blue">{{ item_.title }}</a>
-                                                            </h5>
-                                                            <span class="widget-toolbar">
+                                            {% if sDate >= dDate and sEnd <= dDate %}
+                                                <div class="timeline-items">
+                                                    <div class="timeline-item clearfix">
+                                                        {% if item_.icon is not empty %}
+                                                            <div class="timeline-info">
+                                                                <i style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; ' : 'background-color: #3A87AD;' }}
+                                                            {{ item_.textColor is not empty ? 'color: '~item_.textColor~'; ' }}"
+                                                                   class="timeline-indicator ace-icon fa {{ item_.icon }} no-hover">
+                                                                </i>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if showed2 != item_.start | date('U') %}
+                                                         <span class="label label-info label-sm">{{ item_.start | date('H:i') }}</span>
+                                                        {% endif %}
+                                                        {% set showed2 = item_.start | date('U') %}
+                                                        <div class="widget-box transparent">
+                                                            <div class="widget-header widget-header-small">
+                                                                <h5 class="widget-title smaller">
+                                                                    <a href="{{ path('calendar_show', {
+                                                                        id: item_.calendar.id,
+                                                                        item: item_.id
+                                                                    }) }}" class="blue">{{ item_.title }}</a>
+                                                                </h5>
+                                                                <span class="widget-toolbar">
                                                               <a href="{{ path("timeline_status", {id: item_.id}) }}">
                                                         <i class="ace-icon fa fa-check green bigger-130"></i>
                                                     </a>
                                                     <a href="{{ path("calendar_show", {
                                                         id: item_.calendar.id,
-                                                        item: item.id
+                                                        item: item_.id
                                                     }) }}">
                                                         <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                     </a>
 
-                                                    <a href="{{ path('calendar_delete', {id: item_.id, retTl:1}) }}"
-                                                       onclick="return confirm('Delete this item?');"
-                                                    >
-                                                        <i class="ace-icon fa fa-times red bigger-125"></i>
-                                                    </a>
-
                                                             </span>
-                                                        </div>
+                                                            </div>
 
-                                                        {% set background = item_.color is not empty ? 'background-color: '~item_.color~'!important;' %}
-                                                        {% set textColor = item_.textColor is not empty ? 'color: '~item_.textColor~'!important;' %}
-                                                        <div class="widget-body" style="{{ background ~ textColor }}">
-                                                            <div class="widget-main">
-                                                                {{ item_.status }}
-                                                                {{ item_.about }}
+                                                            {% set background = item_.color is not empty ? 'background-color: '~item_.color~'!important;' %}
+                                                            {% set textColor = item_.textColor is not empty ? 'color: '~item_.textColor~'!important;' %}
+                                                            <div class="widget-body"
+                                                                 style="{{ background ~ textColor }}">
+                                                                <div class="widget-main">
+                                                                    {{ item_.status }}
+                                                                    {{ item_.about }}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                            </div><!-- /.timeline-items -->
-                                        {% else %}
+                                                </div><!-- /.timeline-items -->
+                                            {% else %}
 
-                                        {% endif %}
+                                            {% endif %}
 
-                                    {% endfor %}
-                                </div><!-- /.timeline-container -->
-                            {% endif %}
-                            {% set showed = (item.start | date("Y-m-d")) %}
+                                        {% endfor %}
+                                    </div><!-- /.timeline-container -->
+                                {% endif %}
+                                {% set showed = (item.start | date("Y-m-d")) %}
 
-                        {% endfor %}
+                            {% endfor %}
                         {% else %}
                             {% include 'elements/emty-items.html.twig' %}
                         {% endif %}

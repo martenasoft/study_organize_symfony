@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Calendar;
 use App\Entity\CalendarItem;
+use App\Service\DateFormatService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,6 +16,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CalendarItemType extends AbstractType
 {
+    private DateFormatService $dateFormatService;
+
+    public function __construct(DateFormatService $dateFormatService) {
+        $this->dateFormatService = $dateFormatService;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -51,42 +58,20 @@ class CalendarItemType extends AbstractType
                 ]
             )->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $data = $event->getData();
-                $dateRange = $data->getDateRange();
-                $patterDateTime1 = '(\d{2})\/(\d{2})\/(\d{4})\s(\d{2})\:(\d{2})';
-                $pattern = "/$patterDateTime1\s\-\s$patterDateTime1/";
-                if (preg_match($pattern, $data->getDateRange(), $matches) && count($matches) == 11) {
-                    $data->setStart(new \DateTime(
-                        $matches[3]
-                        .'-'
-                        .$matches[2]
-                        .'-'
-                        .$matches[1]
-                        .' '
-                        .$matches[1]
-                        .':'
-                        .$matches[1]
-                        .':00')
-                    );
+                $dateRange = $this->dateFormatService->dateTimeRangeToDateObjectArray($data->getDateRange());
 
-                    $data->setEnd(new \DateTime(
-                        $matches[8]
-                        .'-'
-                        .$matches[7]
-                        .'-'
-                        .$matches[6]
-                        .' '
-                        .$matches[9]
-                        .':'
-                        .$matches[10]
-                        .':00')
-                    );
+                if (!empty($dateRange)) {
+                    $data
+                        ->setStart($dateRange['start'])
+                        ->setEnd($dateRange['end'])
+                    ;
                 } else {
-
                     $event->getForm()->get('dateRange')->addError(new FormError('Error Format!'));
                 }
 
             });
     }
+
 
     public function configureOptions(OptionsResolver $resolver)
     {

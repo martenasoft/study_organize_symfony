@@ -2,6 +2,17 @@ import './../js/bootstrap-tag.min.js';
 
 $(function () {
 
+    $('.calendar_item_dateRange').daterangepicker({
+        'applyClass': 'btn-sm btn-success',
+        'cancelClass': 'btn-sm btn-default',
+        opens: 'left',
+        timePicker: true,
+        locale: {
+            format: 'DD/MM/YYYY hh:mm',
+            applyLabel: 'Apply',
+            cancelLabel: 'Cancel',
+        }
+    })
     $('#checklist_color').ace_colorpicker();
 
       /*  var tag_input = $('#checklist_title');

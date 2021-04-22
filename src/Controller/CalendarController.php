@@ -135,6 +135,7 @@ class CalendarController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route("/{id}", name="calendar_delete", methods={"POST"})
      */

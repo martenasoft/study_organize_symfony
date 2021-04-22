@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checklist{% endblock %}
+{% block breadcrumbs %}
+    <li>
+        Checklist
+    </li>
+{% endblock %}
+
+{% block h1 %}
+    Checklist
+{% endblock %}
+
+{% block search_input %}
+    {% include 'calendar/new_calendar_button.html.twig' %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
+                    <div class="navigation">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="btn-group">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="space"></div>
+            {% if pagination.getTotalItemCount > 0 %}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form action="" method="post">
+                            <table width="100%" class="table table-bordered" border="0">
+                                {% for item in pagination %}
+                                    <tr style="background:  {{ item.color }}">
+                                        <td width="3%">
+                                            <label class="block">
+                                                <input name="calendar[items][]" id="calendar_item_{{ item.id }}"
+                                                       value="{{ item.id }}" type="checkbox" class="ace input">
+                                                <span class="lbl"></span>
+                                            </label>
+                                        </td>
+                                        <td width="77%">
+                                            <label for="calendar_item_{{ item.id }}">
+                                                <span class="lbl bigger-120">{{ item.title }}</span>
+                                            </label>
+                                        </td>
+                                        <td width="20%">
+                                            <input type="text" class="calendar_item_dateRange"
+                                                   name="calendar[date][]" value="">
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="row">
+
+                                            <div class="col-sm-4">
+                                                <label class="block">
+                                                    <input name="calendar[action][]" value="1" type="checkbox"
+                                                           class="ace input">
+                                                    <span class="lbl"> Delete "{{ checklist.title }}" </span>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <label class="block">
+                                                    <input name="calendar[action][]" value="2" type="checkbox"
+                                                           class="ace input">
+                                                    <span class="lbl"> Return to checklist</span>
+                                                </label>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <a href="{{ path('checklist_index') }}" style="margin-left: 5px;" class="btn pull-right">Cancel</a>
+                                                <button class="btn btn-primary pull-right">Save</button>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
+            {% else %}
+                {% include 'elements/emty-items.html.twig' %}
+            {% endif %}
+
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const isEditable = function () {
+            return false;
+        }
+        const isDroppable = function () {
+            return false;
+        }
+    </script>
+{% endblock %}

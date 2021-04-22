@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Calendar;
+use App\Entity\CalendarItem;
 use App\Entity\Checklist;
 use App\Entity\TagsSearch;
 use App\Form\ChecklistType;
 use App\Form\TagSearchType;
+use App\Repository\CalendarRepository;
 use App\Repository\ChecklistRepository;
+use App\Service\DateFormatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +25,19 @@ class ChecklistController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private ChecklistRepository $checklistRepository;
+    private CalendarRepository $calendarRepository;
+    private DateFormatService $dateFormatService;
 
-    public function __construct(EntityManagerInterface $entityManager, ChecklistRepository $checklistRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ChecklistRepository $checklistRepository,
+        CalendarRepository $calendarRepository,
+        DateFormatService $dateFormatService
+    ) {
         $this->entityManager = $entityManager;
         $this->checklistRepository = $checklistRepository;
+        $this->calendarRepository = $calendarRepository;
+        $this->dateFormatService = $dateFormatService;
     }
 
     /**
@@ -44,32 +55,70 @@ class ChecklistController extends AbstractController
     }
 
     /**
-     * @Route ("/calendar/{id?}", name="checklist_calendar")
+     * @Route ("/calendar/{id}", name="checklist_calendar", methods={"GET", "POST"})
      */
-    public function calendar(Request $request, ?Checklist $checklist = null): Response
+    public function selectCalendar(Request $request, PaginatorInterface $paginator, Checklist $checklist): Response
     {
-        if ($checklist) {
-            $calendar = new Calendar();
-            $dateStart = new \DateTime('now');
-            $dateEnd = new \DateTime('now');
-            $dateEnd->modify("+1 day");
-            $calendar
-                ->setUser($this->getUser())
-                ->setStart($dateStart)
-                ->setEnd($dateEnd)
-                ->setStatus(Calendar::STATUS_ACTIVE)
-                ->setTitle($checklist->getTitle())
-                ->setAbout($checklist->getAbout())
-                ->setColor($checklist->getColor())
+        $calendars = $request->request->get('calendar');
+
+        if (!empty($calendars['items'])) {
+            $items = $this
+                ->calendarRepository
+                ->getItemsByUserAndItemsIds($this->getUser(), $calendars['items'])
+                ->getQuery()
+                ->getResult()
             ;
 
-            $this->entityManager->persist($calendar);
-            $this->entityManager->remove($checklist);
+            foreach ($items as $index => $item) {
+                $calendarItem = new CalendarItem();
+                $calendarItem
+                    ->setCalendar($item)
+                    ->setCreatedAt(new \DateTime('now'))
+                    ->setStatus(Calendar::STATUS_ACTIVE)
+                    ->setTitle($checklist->getTitle())
+                    ->setAbout($checklist->getAbout())
+                    ->setColor($checklist->getColor());
+
+                $dates = $this->dateFormatService->dateTimeRangeToDateObjectArray($calendars['date'][$index]);
+                if (!empty($dates)) {
+                    $calendarItem
+                        ->setStart($dates['start'])
+                        ->setEnd($dates['end']);
+                }
+                $this->entityManager->persist($calendarItem);
+            }
+
+            $isReturnToChecklist = false;
+            if (!empty($calendars['action'])) {
+                foreach ($calendars['action'] as $action) {
+                    switch ($action) {
+                        case '1':
+                            $this->entityManager->remove($checklist);
+                            break;
+                        case '2':
+                            $isReturnToChecklist = true;
+                            break;
+                    }
+                }
+            }
+
             $this->entityManager->flush();
 
-            return $this->redirectToRoute("calendar_index", ['id' => $calendar->getId()]);
+            return $this->redirectToRoute(
+                !$isReturnToChecklist ? 'calendar_index' : 'checklist_index'
+            );
         }
-        return $this->redirectToRoute("checklist_index");
+
+        $queryBuilder = $this->calendarRepository->getQueryBuilderByUser($this->getUser());
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1)
+        );
+
+         return $this->render('checklist/select_calendar.html.twig', [
+             'pagination' => $pagination,
+             'checklist' => $checklist
+         ]);
     }
 
     /**
@@ -131,6 +180,7 @@ class ChecklistController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+
             if (preg_match_all('/\#[a-zA-Z-0-9]+/', $checklist->getAbout(), $matches) && !empty($matches[0])) {
 
 
@@ -154,17 +204,17 @@ class ChecklistController extends AbstractController
             $this->entityManager->persist($checklist);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute("checklist_index");
+            return $this->redirectToRoute("checklist_index", $request->query->all());
         }
 
         return $this->render('checklist/index.html.twig', [
             'form' => $form->createView(),
             'pagination' => $pagination,
+            'checklist' => $checklist,
             'id' => $id,
             'tagSearchForm' => $tagSearchForm->createView()
         ]);
     }
-
 
 
     /**

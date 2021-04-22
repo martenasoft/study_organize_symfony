@@ -41,6 +41,8 @@ class TimelineController extends AbstractController
         $query = $this
             ->calendarItemRepository
             ->getLoadItems()
+            ->orderBy($this
+                          ->calendarItemRepository->getAlias().'.start', 'DESC')
             ->getQuery();
 
         $pagination= $paginator->paginate(

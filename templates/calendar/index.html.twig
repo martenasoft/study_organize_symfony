@@ -14,10 +14,7 @@
 {% endblock %}
 
 {% block search_input %}
-    <a href="{{ path('calendar_new') }}" class="btn btn-app btn-info btn-sm no-radius pull-right">
-        <i class="ace-icon fa fa-plus bigger-100"></i>
-        Create
-    </a>
+    {% include 'calendar/new_calendar_button.html.twig' %}
 {% endblock %}
 
 

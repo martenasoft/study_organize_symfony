@@ -37,7 +37,10 @@ class CalendarController extends AbstractController
      */
     public function index(Request $request,CalendarRepository $calendarRepository): Response
     {
-        $calendars = $calendarRepository->findAll();
+        $calendars = $calendarRepository
+            ->getQueryBuilderByUser($this->getUser())
+            ->getQuery()
+            ->getResult();
         $params = (!empty($calendars[0]) ? [$calendars[0]-> getId()] : []);
 
         //dump($request->query->get('show_calendar'));

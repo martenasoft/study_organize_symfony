@@ -51,6 +51,9 @@
                         <div class="scroll-track scroll-active" style="display: block; height: 600px;">
                             <div class="scroll-bar" style="height: 62px; top: 138px;">
                             </div></div><div class="scroll-content" style="max-height: 600px;">
+                            {% if calendars is empty %}
+                                <p>You have no calendars. <a href="{{ path('calendar_new') }}"> Create new calendar </a></p>
+                            {% endif %}
                             {% for index,calendar in calendars %}
                             <form action="" method="get" id="calendar_form_items">
                             <div class="profile-activity clearfix">

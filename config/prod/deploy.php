@@ -23,26 +23,22 @@ return new class extends DefaultDeployer {
 
     public function beforePreparing()
     {
-        $this->runRemote('echo "======== ENV: $APP_ENV ============="');
+       // $this->runRemote('mv {{ deploy_dir }}/current/public/info/__technical-works.php {{ deploy_dir }}/current/public/info/technical-works.php');
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ project_dir }}/.env');
-       // $this->runRemote('cp {{ project_dir }}/repo/public/build {{ deploy_dir }}/public/build');
-     //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.prod {{ project_dir }}/.env.prod');
-     //   $this->runRemote('cp {{ deploy_dir }}/repo/.env.local {{ project_dir }}/.env.local');
     }
 
     // run some local or remote commands after the deployment is finished
     public function beforeFinishingDeploy()
     {
-      //  $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ deploy_dir }}/.env');
-      //  $this->runRemote('composer install --no-progress');
         $this->runRemote('echo "=========| RUN DEPLOY |===================="');
         $this->runRemote('echo "php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod"');
-        //$this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:sync-metadata-storage --no-interaction --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:migrations:migrate --no-interaction --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console cache:clear --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
+     //   $this->runRemote('mv {{ deploy_dir }}/current/public/info/technical-works.php mv {{ deploy_dir }}/current/public/info/__technical-works.php');
+
         // $this->runRemote('{{ console_bin }} app:my-task-name');
         // $this->runLocal('say "The deployment has finished."');
     }

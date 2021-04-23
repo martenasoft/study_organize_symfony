@@ -1,5 +1,10 @@
 <?php
 
+if (file_exists(__DIR__ .'/info/technical-works.php')) {
+    header("Location: /info/technical-works.php");
+    exit();
+}
+
 use App\Kernel;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;

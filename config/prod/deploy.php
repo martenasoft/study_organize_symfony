@@ -23,7 +23,7 @@ return new class extends DefaultDeployer {
 
     public function beforePreparing()
     {
-       // $this->runRemote('mv {{ deploy_dir }}/current/public/info/__technical-works.php {{ deploy_dir }}/current/public/info/technical-works.php');
+    //    $this->runRemote('mv {{ deploy_dir }}/current/public/index.php {{ deploy_dir }}/current/public/__old_index_technical-works.php && mv {{ deploy_dir }}/current/public/___technical_works.php {{ deploy_dir }}/current/public/index.php ');
         $this->runRemote('cp {{ deploy_dir }}/repo/.env {{ project_dir }}/.env');
     }
 
@@ -37,7 +37,8 @@ return new class extends DefaultDeployer {
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-metadata --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-query --env=prod');
         $this->runRemote('php {{ deploy_dir }}/current/bin/console doctrine:cache:clear-result --env=prod');
-     //   $this->runRemote('mv {{ deploy_dir }}/current/public/info/technical-works.php mv {{ deploy_dir }}/current/public/info/__technical-works.php');
+
+      //  $this->runRemote('mv {{ deploy_dir }}/current/public/index.php {{ deploy_dir }}/current/public/___technical_works.php && mv {{ deploy_dir }}/current/public/__old_index_technical-works.php {{ deploy_dir }}/current/public/index.php ');
 
         // $this->runRemote('{{ console_bin }} app:my-task-name');
         // $this->runLocal('say "The deployment has finished."');

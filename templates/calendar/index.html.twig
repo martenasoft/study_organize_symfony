@@ -1,16 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Calendar{% endblock %}
+{% block title %}Calendars{% endblock %}
 
 {% block breadcrumbs %}
     <li>
-        Calendar
+        Calendars
     </li>
 {% endblock %}
 
 {% block h1 %}
-    Mailbox
-
+    Calendars
 {% endblock %}
 
 {% block search_input %}
@@ -31,19 +30,19 @@
         <div class="widget-box transparent">
             <div class="widget-header widget-header-small">
                 <h4 class="widget-title blue smaller">
-                    <i class="ace-icon fa fa-rss orange"></i>
-                    Recent Activities
+                    <i class="ace-icon fa fa-calendar orange"></i>
+                    Select calendars
                 </h4>
 
-                <div class="widget-toolbar action-buttons">
-                    <a href="#" data-action="reload">
+<!--                <div class="widget-toolbar action-buttons">
+                    <a href="{{ path('calendar_index') }}" data-action="reload">
                         <i class="ace-icon fa fa-refresh blue"></i>
                     </a>
                     &nbsp;
                     <a href="#" class="pink">
                         <i class="ace-icon fa fa-trash-o"></i>
                     </a>
-                </div>
+                </div>-->
             </div>
 
             <div class="widget-body">
@@ -56,8 +55,10 @@
                             <form action="" method="get" id="calendar_form_items">
                             <div class="profile-activity clearfix">
                                 <div>
+                                    {% if calendar.user != app.user %}
                                     <img class="pull-left" alt="Susan Smith's avatar" src="{{  asset('build/images/avatars/avatar1.png') }}">
                                     <a class="user" href="#"> {{ calendar.user.email}} </a>
+                                    {% endif %}
                                     <div>
                                         <input type="checkbox"
                                                 name="show_calendar[]"
@@ -71,7 +72,7 @@
                                     </div>
                                     <div class="time">
                                         <i class="ace-icon fa fa-clock-o bigger-110"></i>
-                                        2 hours ago
+                                        {{ calendar.createdAt | date("d/m/Y H:i") }}
                                     </div>
                                 </div>
 

@@ -175,9 +175,10 @@ class ChecklistController extends AbstractController
             $request->query->getInt('page', 1) /*page number*/
 
         );
-        $formClass = ChecklistShortType::class;
-        if ($request->query->get('all-form') == 'yes' || !empty($id)) {
-            $formClass = ChecklistType::class;
+        $formClass = ChecklistType::class;
+        if ($request->query->get('all-form') != 'yes' && empty($id) && $pagination->getTotalItemCount() > 0) {
+            $formClass = ChecklistShortType::class;
+
         }
         $form = $this->createForm($formClass, $checklist);
         $form->handleRequest($request);

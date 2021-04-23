@@ -34,9 +34,9 @@
 
 {% block body %}
 
-    {% set isShortForm = app.request.query.get('all-form') != 'yes' and id is empty %}
+    {% set isShortForm = app.request.query.get('all-form') != 'yes' and id is empty and pagination.getTotalItemCount > 0 %}
     <div class="row">
-        <div class="col-sm-{{ isShortForm ? '12' : '8' }}">
+        <div class="col-sm-{{ isShortForm  ? '12' : '8' }}">
             <div class="row">
                 <div class="col-sm-6">
                     <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
@@ -54,7 +54,6 @@
 
                             {% endfor %}
                         {% endif %}
-
                     </div>
                 </div>
             </div>

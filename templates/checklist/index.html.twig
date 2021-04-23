@@ -34,8 +34,9 @@
 
 {% block body %}
 
+    {% set isShortForm = app.request.query.get('all-form') != 'yes' and id is empty %}
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-{{ isShortForm ? '12' : '8' }}">
             <div class="row">
                 <div class="col-sm-6">
                     <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
@@ -43,16 +44,15 @@
                         {{ knp_pagination_render(pagination) }}
                     </div>
                 </div>
-
                 <div class="col-sm-6">
-                    <div class="btn-group">
+                    <div class="pull-right btn-group">
                         {% if  pagination.getTotalItemCount >= 2 %}
-                        {% for i in 1..3 %}
-                            {% set disabled = (app.request.query.get('show-as') is empty and i == 1) or app.request.query.get('show-as') == i ? 'disabled' %}
-                            <a href="{{ path('checklist_index', {'show-as': i} | merge( app.request.query.all() | filter((k,v) => v != 'show-as'))) }}"
-                                    {{ disabled }} type="button" class="btn {{ disabled }}">{{ i }}</a>
+                            {% for i in 1..3 %}
+                                {% set disabled = (app.request.query.get('show-as') is empty and i == 1) or app.request.query.get('show-as') == i ? 'disabled' %}
+                                <a href="{{ path('checklist_index', {'show-as': i} | merge( app.request.query.all() | filter((k,v) => v != 'show-as'))) }}"
+                                        {{ disabled }} type="button" class="btn btn-sm {{ disabled }}">{{ i }}</a>
 
-                        {% endfor %}
+                            {% endfor %}
                         {% endif %}
 
                     </div>
@@ -62,9 +62,53 @@
             <div class="space"></div>
             {% if pagination.getTotalItemCount > 0 %}
                 <div class="row">
+                    {% if isShortForm == true %}
+                        {{ form_start(form,  {action:  path('checklist_index', app.request.query.all() )}) }}
+                        <div class="col-sm-8">
+                            {{ form_row(form.title) }}
+                        </div>
+                        <div class="col-sm-2">
+                          <button class="btn btn-sm btn-success pull-left">
+                            <i class="ace-icon fa fa-check align-top bigger-125"></i>
+                            Save
+                        </button>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="pull-right">
+                                <a href="{{ path("checklist_index", {'all-form': 'yes'}|merge(app.request.query.all()| filter((k,v) => v != 'all-form'))) }}">
+                                    more checklist params...</a>
+                            </div>
+                        </div>
+
+                        {{ form_end(form) }}
+                    {% endif %}
+
+                    <div class="col-sm-12">
+
+                    <h3 class="row header smaller lighter orange">
+                        <span class="col-sm-8">
+                            <i class="ace-icon fa fa-hashtag"></i>
+                            Filtered by tags:
+                            {% if app.request.query.get('q') is not empty %}
+                                {{ app.request.query.get('q') }}
+                            {% endif %}
+                        </span><!-- /.col -->
+                        <span class="col-sm-4">
+<!--												<label class="pull-right inline">
+													<small class="muted">Check all:</small>
+
+													<input id="gritter-light" checked="" type="checkbox" class="ace ace-switch ace-switch-5">
+													<span class="lbl middle"></span>
+												</label>-->
+											</span>
+                    </h3>
+                    </div>
+
+                    <div class="message-list-container">
+
                     {% for item in pagination %}
-                        <div class="col-sm-{{ 12 / app.request.query.get('show-as', 1) }}">
-                            <table width="100%" class="table " border="0">
+                        <div class=" message-item col-sm-{{ 12 / app.request.query.get('show-as', 1) }}">
+                            <table width="100%" border="0">
                                 <tr style="{{ item.color is not empty ? 'background:'~item.color~';' }}"
                                     class=" message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
                                     <td width="3%">{{ loop.index }}</td>
@@ -87,33 +131,38 @@
                                     </span>
                                     </td>
                                     {% if  app.request.query.get('show-as') < 3 %}
-                                    <td width="20%">
-                                        <div class="pull-right">
+                                        <td width="20%">
+                                            <div class="pull-right">
 
-                                            {% if item.status == 1 %}
-                                                <a href="{{ path('checklist_calendar', {id: item.id}) }}">
-                                                    <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                                {% if item.status == 1 %}
+                                                    <a href="{{ path('checklist_calendar', {id: item.id}) }}">
+                                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                                           style="padding-right: 10px;"></i>
+                                                    </a>
+                                                {% else %}
+                                                    <i class="ace-icon fa fa-calendar-plus-o grey bigger-125"
                                                        style="padding-right: 10px;"></i>
-                                                </a>
-                                            {% else %}
-                                                <i class="ace-icon fa fa-calendar-plus-o grey bigger-125"
-                                                   style="padding-right: 10px;"></i>
-                                            {% endif %}
-                                            <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
-                                                        class="ace-icon fa fa-pencil blue bigger-125"></i></a>
+                                                {% endif %}
+                                                <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
+                                                            class="ace-icon fa fa-pencil blue bigger-125"></i></a>
 
-                                            {% if item.externalLink is not empty %}
-                                                <a href="{{ item.externalLink }} " target="_blank">
-                                                    <i class="ace-icon fa fa-share  red bigger-125"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
+                                                {% if item.externalLink is not empty %}
+                                                    <a href="{{ item.externalLink }} " target="_blank">
+                                                        <i class="ace-icon fa fa-share  red bigger-125"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
                                     {% endif %}
                                 </tr>
                             </table>
                         </div>
+                        {% if app.request.query.get('show-as', 1) > 1
+                            and (loop.revindex + 1 == app.request.query.get('show-as', 1))%}
+                            <div class="col-sm-12"></div>
+                        {% endif %}
                     {% endfor %}
+                    </div>
                 </div>
 
             {% else %}
@@ -124,14 +173,17 @@
                 {{ knp_pagination_render(pagination) }}
             </div>
         </div>
-        <div class="col-sm-4">
-            {% if id is not empty %}
-                 {{ form_start(form,  {action:  path('checklist_index', {id: id} |merge(app.request.query.all()))}) }}
-            {% else %}
-                {{ form_start(form,  {action:  path('checklist_index', app.request.query.all() )}) }}
-            {% endif %}
-            {{ form_row(form.title) }}
-            <div class="{{ app.request.query.get('all-form') != 'yes' ? 'hidden' }}">
+        {% if isShortForm == false %}
+
+            <div class="col-sm-4">
+
+
+                {% if id is not empty %}
+                    {{ form_start(form,  {action:  path('checklist_index', {id: id} |merge(app.request.query.all()))}) }}
+                {% else %}
+                    {{ form_start(form,  {action:  path('checklist_index', app.request.query.all() )}) }}
+                {% endif %}
+                {{ form_row(form.title) }}
                 {{ form_row(form.about) }}
                 {{ form_row(form.color) }}
                 {{ form_row(form.hashtag) }}
@@ -139,33 +191,33 @@
 
                 {{ form_row(form.externalLink) }}
                 (https://www.playphrase.me)
-            </div>
-            {% if app.request.query.get('all-form') != 'yes' %}
-                <a href="{{ path("checklist_index", {'all-form': 'yes'}|merge(app.request.query.all()| filter((k,v) => v != 'all-form'))) }}">more ...</a>
-            {% else %}
-                <a href="{{ path("checklist_index", app.request.query.all()| filter((k,v) => v != 'all-form'))}}">less ...</a>
 
-            {% endif %}
-            <hr>
-            <div class="row">
-                <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
-                    <button type="submit" id="btn-submit"
-                            class="btn btn-primary ">Save
-                    </button>
-
-                    <a href="{{ path("checklist_index", app.request.query.all()) }}" class="btn btn-default">Cancel</a>
+                <div class="form-group">
+                    <a href="{{ path("checklist_index", app.request.query.all()| filter((k,v) => v != 'all-form')) }}">
+                        hide this form
+                    </a>
                 </div>
-                {% if id is not empty %}
-                    <div class="col-sm-6">
-                        <a href="{{ path("checklist_delete", {id: id}|merge(app.request.query.all())) }}"
-                           onclick="return confirm('Delete this item?');"
-                           class="btn btn-danger pull-right">Delete</a>
-                    </div>
-                {% endif %}
-            </div>
+                <hr>
+                <div class="row">
+                    <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">
+                        <button type="submit" id="btn-submit"
+                                class="btn btn-primary ">Save
+                        </button>
 
-            {{ form_end(form) }}
-        </div>
+                        <a href="{{ path("checklist_index", app.request.query.all()) }}"
+                           class="btn btn-default">Cancel</a>
+                    </div>
+                    {% if id is not empty %}
+                        <div class="col-sm-6">
+                            <a href="{{ path("checklist_delete", {id: id}|merge(app.request.query.all())) }}"
+                               onclick="return confirm('Delete this item?');"
+                               class="btn btn-danger pull-right">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

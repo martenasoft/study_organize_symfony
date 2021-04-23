@@ -6,6 +6,7 @@ use App\Entity\Calendar;
 use App\Entity\CalendarItem;
 use App\Entity\Checklist;
 use App\Entity\TagsSearch;
+use App\Form\ChecklistShortType;
 use App\Form\ChecklistType;
 use App\Form\TagSearchType;
 use App\Repository\CalendarRepository;
@@ -135,7 +136,6 @@ class ChecklistController extends AbstractController
         } else {
             $id = $checklist->getId();
         }
-
         $queryBuilder = $this
             ->checklistRepository
             ->getQueryBuilderByUser($this->getUser())
@@ -173,16 +173,18 @@ class ChecklistController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder, /* query NOT result */
             $request->query->getInt('page', 1) /*page number*/
-        );
 
-        $form = $this->createForm(ChecklistType::class, $checklist);
+        );
+        $formClass = ChecklistShortType::class;
+        if ($request->query->get('all-form') == 'yes' || !empty($id)) {
+            $formClass = ChecklistType::class;
+        }
+        $form = $this->createForm($formClass, $checklist);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-
             if (preg_match_all('/\#[a-zA-Z-0-9]+/', $checklist->getAbout(), $matches) && !empty($matches[0])) {
-
 
                 $this
                     ->checklistRepository

@@ -18,9 +18,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CalendarItemRepository::class)
  */
-class CalendarItem implements IconInterface, ColorInterface, TextColorInterface, ChangeDataDayInterface, StatusInterface
+class CalendarItem implements StatusInterface,IconInterface, ColorInterface, TextColorInterface, ChangeDataDayInterface
 {
-    use IconTrait, ChangeDataDayTrait, ColorTrait, TextColorTrait, StatusTrait;
+    use StatusTrait, IconTrait, ChangeDataDayTrait, ColorTrait, TextColorTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,7 +54,7 @@ class CalendarItem implements IconInterface, ColorInterface, TextColorInterface,
     private ?string $about;
 
     private ?string $dateRange;
-
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -125,5 +125,6 @@ class CalendarItem implements IconInterface, ColorInterface, TextColorInterface,
         $this->dateRange = $dateRange;
         return $this;
     }
+
 }
 

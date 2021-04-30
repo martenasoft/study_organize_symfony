@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\ChangeDataDayInterface;
+use App\Entity\Interfaces\StatusInterface;
+use App\Entity\Traits\ChangeDataDayTrait;
+use App\Entity\Traits\StatusTrait;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="`user`")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User implements UserInterface
+class User implements UserInterface, ChangeDataDayInterface, StatusInterface
 {
+    use ChangeDataDayTrait, StatusTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -44,9 +49,14 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="users", cascade={"persist"})
+     */
+    private $group;
+
     public function __construct()
     {
-
+        $this->group = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,6 +148,33 @@ class User implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getGroup(): Collection
+    {
+        return $this->group;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->group->contains($group)) {
+            $this->group[] = $group;
+            $group->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        if ($this->group->removeElement($group)) {
+            $group->removeUser($this);
+        }
 
         return $this;
     }

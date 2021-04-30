@@ -191,11 +191,13 @@
                 {{ form_row(form.externalLink) }}
                 (https://www.playphrase.me)
 
+                {% if pagination.getTotalItemCount > 0 %}
                 <div class="form-group">
                     <a href="{{ path("checklist_index", app.request.query.all()| filter((k,v) => v != 'all-form')) }}">
                         hide this form
                     </a>
                 </div>
+                {% endif %}
                 <hr>
                 <div class="row">
                     <div class="{{ id is empty ? "col-sm-12" : "col-sm-6" }} ">

@@ -1,9 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Calendar{% endblock %}
+{% block title %}Edit Calendar {{ calendar.title }}{% endblock %}
+
+{% block breadcrumbs %}
+    <li><a href="{{ path('calendar_index') }}">Calendar </a></li>
+    <li> Calendars {{ calendar.title }} </li>
+{% endblock %}
+
+{% block h1 %}
+    Calendars {{ calendar.title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Calendar</h1>
 
     {{ include('calendar/_form.html.twig', {'button_label': 'Update'}) }}
 

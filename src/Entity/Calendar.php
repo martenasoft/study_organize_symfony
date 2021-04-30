@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\AccessModeInterface;
 use App\Entity\Interfaces\ChangeDataDayInterface;
 use App\Entity\Interfaces\ColorInterface;
 use App\Entity\Interfaces\JoinUserInterface;
 use App\Entity\Interfaces\StatusInterface;
 use App\Entity\Interfaces\TextColorInterface;
+use App\Entity\Traits\AccessModeTrait;
 use App\Entity\Traits\ChangeDataDayTrait;
 use App\Entity\Traits\ColorTrait;
 use App\Entity\Traits\JoinUserTrait;
@@ -20,9 +22,15 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CalendarRepository::class)
  */
-class Calendar implements StatusInterface, ColorInterface, TextColorInterface, JoinUserInterface, ChangeDataDayInterface
+class Calendar implements
+    StatusInterface,
+    ColorInterface,
+    TextColorInterface,
+    JoinUserInterface,
+    ChangeDataDayInterface,
+    AccessModeInterface
 {
-    use StatusTrait, ColorTrait, TextColorTrait, JoinUserTrait, ChangeDataDayTrait;
+    use StatusTrait, ColorTrait, TextColorTrait, JoinUserTrait, ChangeDataDayTrait, AccessModeTrait;
 
     /**
      * @ORM\Id
@@ -46,13 +54,17 @@ class Calendar implements StatusInterface, ColorInterface, TextColorInterface, J
      */
     private $calendarItems;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     */
+    private User $user;
+
     public function __construct()
     {
         $this->calendarItems = new ArrayCollection();
         $this->updatedAt = null;
         $this->deletedAt = null;
     }
-
 
     public function getId(): ?int
     {

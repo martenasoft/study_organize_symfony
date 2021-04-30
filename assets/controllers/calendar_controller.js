@@ -87,8 +87,8 @@ jQuery(function ($) {
                 changeData(event.id, event.start.format(), event.end.format());
             },
 
-            editable:  isEditable(),
-            droppable: isDroppable(), // this allows things to be dropped onto the calendar !!!
+            editable:  (typeof  isEditable == 'function' ? isEditable() : false),
+            droppable: (typeof isDroppable == 'function' ? isDroppable() : false), // this allows things to be dropped onto the calendar !!!
             eventDrop: function(event) {
                 changeData(event.id, event.start.format(), event.end.format());
             },

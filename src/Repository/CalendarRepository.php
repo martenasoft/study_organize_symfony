@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Calendar;
+use App\Entity\Interfaces\StatusInterface;
 use App\Entity\User;
 use App\Repository\Traits\TraitRepositoryByUserAndItemsIdsQueryBuilder;
 use App\Repository\Traits\TraitRepositoryGetQueryBuilderByUser;
@@ -19,6 +20,22 @@ class CalendarRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Calendar::class);
         $this->setAlias('c');
+    }
+
+    public function getItemsByUserQueryBuilder(
+        User $user,
+        ?int $status = null,
+        ?QueryBuilder $queryBuilder = null,
+        ?string $indexBy = null
+    ): QueryBuilder {
+        $queryBuilder = $this->getQueryBuilderByUser($user, $queryBuilder, $indexBy);
+        $queryBuilder->innerJoin($this->getAlias().'.user', 'user');
+        if (!empty($status)) {
+            $queryBuilder
+                ->andWhere($this->getAlias().".status=:status")
+                ->setParameter("status", $status);
+        }
+        return $queryBuilder;
     }
 
     public function getStatistics(User $user): array

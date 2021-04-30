@@ -9,6 +9,7 @@ use App\Form\CalendarItemType;
 use App\Repository\CalendarItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,10 +85,17 @@ class CalendarItemController extends AbstractController
     /**
      * @Route("/", name="calendar_item_index", methods={"GET"})
      */
-    public function index(CalendarItemRepository $calendarItemRepository): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $this->calendarItemRepository->getItemsByUserQueryBuilder($this->getUser());
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1)
+
+        );
         return $this->render('calendar_item/index.html.twig', [
-            'calendar_items' => $calendarItemRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 

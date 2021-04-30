@@ -2,48 +2,74 @@
 
 {% block title %}CalendarItem index{% endblock %}
 
-{% block body %}
-    <h1>CalendarItem index</h1>
+{% block breadcrumbs %}
+    <li>
+        Calendars index
+    </li>
+{% endblock %}
 
-    <table class="table">
-        <thead>
+{% block h1 %}
+    Calendars index
+{% endblock %}
+
+{% block search_input %}
+    {% include 'calendar/new_calendar_button.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+    <div class="row">
+
+        <table class="table">
+            <thead>
             <tr>
-                <th>Id</th>
-                <th>Start</th>
-                <th>End</th>
                 <th>Title</th>
-                <th>About</th>
-                <th>Icon</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>DeletedAt</th>
+                <th>Start - End</th>
+
                 <th>actions</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for calendar_item in calendar_items %}
-            <tr>
-                <td>{{ calendar_item.id }}</td>
-                <td>{{ calendar_item.start ? calendar_item.start|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ calendar_item.end ? calendar_item.end|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ calendar_item.title }}</td>
-                <td>{{ calendar_item.about }}</td>
-                <td>{{ calendar_item.icon }}</td>
-                <td>{{ calendar_item.createdAt ? calendar_item.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ calendar_item.updatedAt ? calendar_item.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ calendar_item.deletedAt ? calendar_item.deletedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('calendar_item_show', {'id': calendar_item.id}) }}">show</a>
-                    <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for calendar_item in pagination %}
+                <tr>
+                    <td width="60%">{{ calendar_item.title }}</td>
+                    <td>
+                        {{ calendar_item.start ? calendar_item.start|date('d/m/Y H:i') : '' }}
+                        {{ calendar_item.end ? ' - '~calendar_item.end|date('d/m/Y H:i') : '' }}
+                    </td>
 
-    <a href="{{ path('calendar_item_new') }}">Create new</a>
+                    <td>
+                        <a href="{{ path('calendar_item_show', {'id': calendar_item.id}) }}">show</a>
+                        <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
+                    </td>
+                </tr>
+                {% if calendar_item.about is not empty %}
+                    <tr>
+                        <td colspan="3">
+                            <div class="col-xs-12">
+                                <blockquote>
+                                    <p><strong>About</strong></p>
+                                    {{ calendar_item.about }}
+
+                                </blockquote>
+                            </div>
+
+                        </td>
+                    </tr>
+                {% endif %}
+            {% else %}
+                <tr>
+                    <td colspan="10">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('calendar_item_new') }}">Create new</a>
+    </div>
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 {% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Calendar;
 use App\Entity\CalendarItem;
+use App\Entity\CalendarStatus;
 use App\Entity\Interfaces\StatusInterface;
 use App\Form\CalendarItemType;
 use App\Form\CalendarType;
@@ -11,6 +12,7 @@ use App\Repository\CalendarItemRepository;
 use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,18 +37,45 @@ class CalendarController extends AbstractController
     /**
      * @Route("/", name="calendar_index", methods={"GET"})
      */
-    public function index(Request $request,CalendarRepository $calendarRepository): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $calendars = $calendarRepository
-            ->getQueryBuilderByUser($this->getUser())
+        $queryBuilder = $this->calendarRepository
+            ->getItemsByUserQueryBuilder($this->getUser())
             ->getQuery()
             ->getResult();
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1)
+        );
+
         $params = (!empty($calendars[0]) ? [$calendars[0]-> getId()] : []);
 
-        //dump($request->query->get('show_calendar'));
         return $this->render('calendar/index.html.twig', [
-            'calendars' => $calendars,
+            'pagination' => $pagination,
             'calendars_params' => $request->query->get('show_calendar', $params)
+        ]);
+    }
+
+    /**
+     * @Route("/show-as-table", name="calendar_show_as_table", methods={"GET"})
+     */
+    public function tableView(Request $request, PaginatorInterface $paginator): Response
+    {
+        $queryBuilder =  $this->calendarRepository
+            ->getItemsByUserQueryBuilder($this->getUser()
+                , StatusInterface::STATUS_ACTIVE
+            );
+
+        $pagination = $paginator->paginate(
+            $queryBuilder, /* query NOT result */
+            $request->query->getInt('page', 1) /*page number*/
+
+        );
+
+
+        return $this->render('calendar/vew_table.twig', [
+            'pagination' => $pagination
         ]);
     }
 
@@ -57,10 +86,14 @@ class CalendarController extends AbstractController
     {
         $calendar = new Calendar();
         $calendar
-            ->setStatus(Calendar::STATUS_ACTIVE)
+            ->setStatus()
             ->setCreatedAt(new \DateTime('now'))
             ->setUser($this->getUser())
         ;
+
+
+
+
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);
 
@@ -68,7 +101,7 @@ class CalendarController extends AbstractController
             $this->entityManager->persist($calendar);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('calendar_show', ['id' => $calendar->getId()]);
+            return $this->redirectToRoute('calendar_show_as_table');
         }
 
         return $this->render('calendar/new.html.twig', [
@@ -84,6 +117,7 @@ class CalendarController extends AbstractController
      */
     public function show(Request $request, Calendar $calendar, ?int $item = null): Response
     {
+
         $calendarItem = null;
         if (!empty($item)) {
             $calendarItem = $this->entityManager->find(CalendarItem::class, $item);
@@ -129,7 +163,7 @@ class CalendarController extends AbstractController
             $calendar->setUpdatedAt(new \DateTime('now'));
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('calendar_show', ['id' => $calendar->getId()]);
+            return $this->redirectToRoute('calendar_show_as_table');
         }
 
         return $this->render('calendar/edit.html.twig', [

@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.about) }}
+    {{ form_row(form.isGroupRead) }}
+    {{ form_row(form.isGroupWrite) }}
+    {{ form_row(form.isUserRead) }}
+    {{ form_row(form.isUserWrite) }}
+
+<ul class="users" data-prototype="{{ form_widget(form.users.vars.prototype)|e('html_attr') }}">
+    {% for user in form.users %}
+        <li>{{ form_row(user.email) }}</li>
+    {% endfor %}
+</ul>
+<hr>
+
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

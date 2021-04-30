@@ -1,5 +1,11 @@
-
 <a href="{{ path('calendar_new') }}" class="btn btn-success pull-right">
     <i class="ace-icon fa fa-calendar-plus-o align-top bigger-125"></i>
     New Calendar
 </a>
+
+{% if editButtton is not defined or editButtton == true %}
+<a style="margin-right: 10px;" href="{{ path('calendar_show_as_table') }}" class="btn pull-right">
+    <i class="ace-icon fa fa-pencil align-top bigger-125"></i>
+    Edit Calendars
+</a>
+{% endif %}

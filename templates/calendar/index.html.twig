@@ -34,15 +34,6 @@
                     Select calendars
                 </h4>
 
-<!--                <div class="widget-toolbar action-buttons">
-                    <a href="{{ path('calendar_index') }}" data-action="reload">
-                        <i class="ace-icon fa fa-refresh blue"></i>
-                    </a>
-                    &nbsp;
-                    <a href="#" class="pink">
-                        <i class="ace-icon fa fa-trash-o"></i>
-                    </a>
-                </div>-->
             </div>
 
             <div class="widget-body">
@@ -51,16 +42,16 @@
                         <div class="scroll-track scroll-active" style="display: block; height: 600px;">
                             <div class="scroll-bar" style="height: 62px; top: 138px;">
                             </div></div><div class="scroll-content" style="max-height: 600px;">
-                            {% if calendars is empty %}
+                            {% if pagination.getTotalItemCount == 0 %}
                                 <p>You have no calendars. <a href="{{ path('calendar_new') }}"> Create new calendar </a></p>
                             {% endif %}
-                            {% for index,calendar in calendars %}
+                            {% for index,calendar in pagination %}
                             <form action="" method="get" id="calendar_form_items">
                             <div class="profile-activity clearfix">
                                 <div>
                                     {% if calendar.user != app.user %}
                                     <img class="pull-left" alt="Susan Smith's avatar" src="{{  asset('build/images/avatars/avatar1.png') }}">
-                                    <a class="user" href="#"> {{ calendar.user.email}} </a>
+                                    <a class="user" href="#"> {{ calendar.user.email }} </a>
                                     {% endif %}
                                     <div>
                                         <input type="checkbox"
@@ -115,6 +106,8 @@
         const changeData = function (id, start, end) {
             window.location.href = "{{ path('calendar_item_change_data') }}/" + id + "/" + start + "/" + end;
         };
+
+
         const redirectToEdit = function (calendarId, id) {
             window.location.href = "{{ path('calendar_show') }}/" + calendarId + "/" + id;
 

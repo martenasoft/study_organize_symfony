@@ -1,19 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Calendar{% endblock %}
+{% block title %}My Calendars{% endblock %}
 
 {% block breadcrumbs %}
+    <li><a href="{{ path('calendar_index') }}">Calendar </a></li>
     <li>
-        Calendar
+        My Calendars
     </li>
 {% endblock %}
 
 {% block h1 %}
-    Calendar
+    My Calendars
+{% endblock %}
+
+{% block search_input %}
+    {% include 'calendar/new_calendar_button.html.twig' with {editButtton: false} %}
+
 {% endblock %}
 
 {% block body %}
-    
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -21,19 +29,24 @@
                 <th>Status</th>
                 <th>Color</th>
                 <th>TextColor</th>
+                <th>User</th>
+
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for calendar in calendars %}
+        {% for calendar in pagination %}
             <tr>
                 <td>{{ calendar.title }}</td>
                 <td>{{ calendar.status }}</td>
                 <td>{{ calendar.color }}</td>
                 <td>{{ calendar.textColor }}</td>
+                <td>{{ calendar.user.email }}</td>
+
                 <td>
                     <a href="{{ path('calendar_show', {'id': calendar.id}) }}">show</a>
                     <a href="{{ path('calendar_edit', {'id': calendar.id}) }}">edit</a>
+                    <a href="{{ path('calendar_item_index', {'calendar': calendar.id}) }}">items</a>
                 </td>
             </tr>
         {% else %}
@@ -43,6 +56,8 @@
         {% endfor %}
         </tbody>
     </table>
-
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
     <a href="{{ path('calendar_new') }}">Create new</a>
 {% endblock %}

@@ -5,7 +5,7 @@ namespace App\Entity\Traits;
 trait ChangeDataDayTrait
 {
     /**
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false, options={"default" : "0000-00-00 00:00:00"})
      */
     private ?\DateTimeInterface $createdAt;
 
@@ -49,6 +49,7 @@ trait ChangeDataDayTrait
     public function setDeletedAt(?\DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+        return $this;
     }
 
 }

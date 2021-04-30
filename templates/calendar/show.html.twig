@@ -13,18 +13,31 @@
 {% endblock %}
 
 {% block h1 %}
-    Calendar ({{ calendar.title }})
+    Calendar <small>
+    {{ calendar.title }}
+    <i class="ace-icon fa fa-angle-double-right"></i>
+    <a href="{{ path('calendar_edit', {id: calendar.id}) }}">edit</a>
+</small>
 {% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="col-sm-8">
             <div class="space"></div>
-
             <div id="calendar_js"></div>
         </div>
 
         <div class="col-sm-4">
+
+            <h3 class="row header smaller lighter orange">
+                        <span class="col-sm-8">
+                            <i class="ace-icon fa fa-calendar-plus-o"></i>
+                           Action
+                        </span><!-- /.col -->
+                <span class="col-sm-4">
+                </span>
+            </h3>
+
             {{ form_start(form) }}
             {{ form_row(form.title) }}
             {{ form_row(form.about) }}

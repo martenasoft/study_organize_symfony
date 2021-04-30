@@ -21,6 +21,22 @@ class CalendarItemRepository extends ServiceEntityRepository
         parent::__construct($registry, CalendarItem::class);
     }
 
+    public function getItemsByUserQueryBuilder(User $user): QueryBuilder
+    {
+        $queryBuilder = $this->getAllQueryBuilder();
+        $queryBuilder
+            ->addSelect('c')
+            ->innerJoin($this->getAlias().".calendar", "c")
+
+            ->innerJoin("c.user", "u")
+            ->addSelect('u')
+            ->andWhere('c.user=:user')
+            ->setParameter("user", $user)
+        ;
+
+        return $queryBuilder;
+    }
+
     public function getLoadItems(
         ?User $user = null,
         ?array $calendar = null,

@@ -42,11 +42,10 @@
                 <td>{{ calendar.color }}</td>
                 <td>{{ calendar.textColor }}</td>
                 <td>{{ calendar.user.email }}</td>
-
                 <td>
                     <a href="{{ path('calendar_show', {'id': calendar.id}) }}">show</a>
                     <a href="{{ path('calendar_edit', {'id': calendar.id}) }}">edit</a>
-                    <a href="{{ path('calendar_item_index', {'calendar': calendar.id}) }}">items</a>
+                    <a href="{{ path('calendar_item_index', {'calendar_item[calendar][0]': calendar.id}) }}">items</a>
                 </td>
             </tr>
         {% else %}

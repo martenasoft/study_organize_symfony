@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block search_input %}
-    {% include 'calendar/new_calendar_button.html.twig' %}
+    {% include 'calendar_item/new_calendar_item_button.html.twig' %}
 {% endblock %}
 
 {% block body %}
@@ -21,15 +21,25 @@
         {{ knp_pagination_render(pagination) }}
     </div>
     <div class="row">
-
+        {{ form_start(calendarFilterType) }}
         <table class="table">
             <thead>
             <tr>
-                <th>Title</th>
-                <th>Start - End</th>
+                <td><div>{{ form_label(calendarFilterType.calendar) }}</div><div>{{ form_widget(calendarFilterType.calendar) }}</div></td>
+                <td>{{ form_row(calendarFilterType.title) }}</td>
+                <td>{{ form_row(calendarFilterType.dateStartEnd) }}</td>
+                <td><div style="margin-top: 25px">
+                        <button class="btn btn-default btn-sm" type="submit">
+                            <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                        </button>
+                        <a href="{{ path("calendar_item_index") }}" type="submit" class="btn btn-default btn-sm">
+                            <span class="ace-icon glyphicon glyphicon-remove bigger-110"></span>
 
-                <th>actions</th>
+                        </a>
+                    </div>
+                </td>
             </tr>
+
             </thead>
             <tbody>
             {% for calendar_item in pagination %}
@@ -66,7 +76,7 @@
             {% endfor %}
             </tbody>
         </table>
-
+        {{ form_end(calendarFilterType) }}
         <a href="{{ path('calendar_item_new') }}">Create new</a>
     </div>
     <div class="navigation">

@@ -24,7 +24,7 @@ trait ChangeDataDayTrait
         return $this->createdAt;
     }
     
-    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    public function setCreatedAt(?\DateTimeInterface $createdAt = null): self
     {
         $this->createdAt = $createdAt;
         return $this;

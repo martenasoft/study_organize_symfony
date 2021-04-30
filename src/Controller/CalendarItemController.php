@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Calendar;
 use App\Entity\CalendarItem;
+use App\Entity\Filter\CalendarItem as CalendarItemFilter;
 use App\Entity\Interfaces\StatusInterface;
+use App\Form\Filter\CalendarItemType as CalendarItemTypeFilter;
 use App\Form\CalendarItemType;
 use App\Repository\CalendarItemRepository;
+use App\Repository\CalendarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -22,13 +25,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class CalendarItemController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private CalendarRepository $calendarRepository;
     private CalendarItemRepository $calendarItemRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        CalendarRepository $calendarRepository,
         CalendarItemRepository $calendarItemRepository
-    ) {
+    )
+    {
         $this->entityManager = $entityManager;
+        $this->calendarRepository = $calendarRepository;
         $this->calendarItemRepository = $calendarItemRepository;
     }
 
@@ -37,7 +44,8 @@ class CalendarItemController extends AbstractController
      */
     public function getItems(
         Request $request
-    ): Response {
+    ): Response
+    {
         $calendarId = $request->query->get('calendarId');
         $start = $request->query->get('start');
         $end = $request->query->get('end');
@@ -60,11 +68,10 @@ class CalendarItemController extends AbstractController
             ->calendarItemRepository
             ->getLoadItems($this->getUser(), $calendarId, new \DateTime($start), new \DateTime($end))
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
 
         foreach ($items as $item) {
-            $ret[]  = [
+            $ret[] = [
                 "id" => $item->getId(),
                 "calendar_id" => $item->getCalendar()->getId(),
                 "title" => $item->getTitle(),
@@ -87,7 +94,17 @@ class CalendarItemController extends AbstractController
      */
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->calendarItemRepository->getItemsByUserQueryBuilder($this->getUser());
+        $calendarFilterEntity = new CalendarItemFilter();
+
+        $calendarFilterType = $this->createForm(CalendarItemTypeFilter::class, $calendarFilterEntity, [
+            'user' => $this->getUser()
+        ]);
+
+        $calendarFilterType->handleRequest($request);
+
+        $queryBuilder = $this
+            ->calendarItemRepository
+            ->getItemsByUserQueryBuilder($this->getUser(), $calendarFilterType);
 
         $pagination = $paginator->paginate(
             $queryBuilder,
@@ -96,6 +113,7 @@ class CalendarItemController extends AbstractController
         );
         return $this->render('calendar_item/index.html.twig', [
             'pagination' => $pagination,
+            'calendarFilterType' => $calendarFilterType->createView()
         ]);
     }
 
@@ -104,8 +122,18 @@ class CalendarItemController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $calendars = $request->query->get('calendar_item');
+
         $calendarItem = new CalendarItem();
-        $form = $this->createForm(CalendarItemType::class, $calendarItem);
+        $calendarItem->setCreatedAt(new \DateTime('now'));
+        $calendarItem->setStatus(StatusInterface::STATUS_ACTIVE);
+        $form = $this->createForm(CalendarItemType::class, $calendarItem, [
+            'user' => $this->getUser()
+        ]);
+
+
+        dump($request->query->get('calendar_item')); die;
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -172,7 +200,7 @@ class CalendarItemController extends AbstractController
      */
     public function delete(Request $request, CalendarItem $calendarItem): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$calendarItem->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $calendarItem->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($calendarItem);
             $entityManager->flush();

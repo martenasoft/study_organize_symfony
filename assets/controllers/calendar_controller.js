@@ -12,7 +12,7 @@ jQuery(function ($) {
     });
 
 
-    $('#calendar_item_dateRange').daterangepicker({
+    $('#calendar_item_dateRange, #calendar_item_dateStartEnd').daterangepicker({
         'applyClass' : 'btn-sm btn-success',
         'cancelClass' : 'btn-sm btn-default',
         opens: 'left',

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Interfaces\StatusInterface;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
@@ -31,6 +32,8 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, AppCustomAuthenticator $authenticator): Response
     {
         $user = new User();
+        $user->setCreatedAt(new \DateTime('now'));
+        $user->setStatus(StatusInterface::STATUS_ACTIVE);
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 

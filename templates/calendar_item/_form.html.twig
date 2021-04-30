@@ -1,4 +1,58 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.calendar) }}
+    {{ form_row(form.dateRange) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.about) }}
+
+
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
+    <i style="font-size: 1.5pc" class="ace-icon glyphicon glyphicon-picture"></i>
+    Icons
+</button>
+<hr>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Icons</h4>
+            </div>
+            <div class="modal-body">
+                <div class="control-group">
+                    <div class="bootstrap-colorpicker">
+                        {{ form_row(form.color) }}
+
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="bootstrap-colorpicker">
+                        {{ form_row(form.textColor) }}
+                    </div>
+                </div>
+                <div class="row" style=" height: 200px;  overflow: auto;">
+                    {% for item_ch in form.icon %}
+                        <div class="col-sm-2">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <i style="font-size: 25px"
+                                       class="ace-icon fa {{ item_ch.vars.value }}"></i>
+                                </div>
+                                <div class="col-sm-6">
+                                    {{ form_row(item_ch, {label:false}) }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

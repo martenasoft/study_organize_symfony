@@ -86,13 +86,10 @@ class CalendarController extends AbstractController
     {
         $calendar = new Calendar();
         $calendar
-            ->setStatus()
+            ->setStatus(StatusInterface::STATUS_ACTIVE)
             ->setCreatedAt(new \DateTime('now'))
             ->setUser($this->getUser())
         ;
-
-
-
 
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);

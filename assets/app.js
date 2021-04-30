@@ -20,6 +20,7 @@ import './css/bootstrap-datepicker3.min.css';
 import './css/bootstrap-timepicker.min.css';
 import './css/daterangepicker.min.css';
 import './css/bootstrap-datetimepicker.min.css';
+import './css/bootstrap-multiselect.min.css';
 
 import './css/app.css';
 
@@ -43,6 +44,7 @@ import './js/ace-elements.min.js';
 import './js/ace.min.js';
 import './js/fullcalendar.min.js';
 import './js/daterangepicker.min.js';
+import './js/bootstrap-multiselect.min.js'
 
 
 import './bootstrap';

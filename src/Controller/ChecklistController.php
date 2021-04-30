@@ -62,7 +62,7 @@ class ChecklistController extends AbstractController
     {
         $calendars = $request->request->get('calendar');
 
-        if (!empty($calendars['items'])) {
+        if (!empty($calendar['items'])) {
             $items = $this
                 ->calendarRepository
                 ->getItemsByUserAndItemsIds($this->getUser(), $calendars['items'])

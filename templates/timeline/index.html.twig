@@ -27,97 +27,108 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
                         {% if pagination.getTotalItemCount > 0 %}
-                            {% set showed = '' %}
-                            {% set showed2 = '' %}
-                            {% for item in pagination.items %}
-                                {% if showed != (item.start | date("Y-m-d")) %}
-                                    <div class="timeline-container">
-                                        <div class="timeline-label">
-                                            {% set date_t = item.start | date('Y-m-d') %}
-                                            {% if date_t == "" | date('Y-m-d') %}
-                                                <span class="label label-success arrowed-in-right label-lg">
+                            <div class="timeline-container">
+                                <div class="timeline-label">
+                                    {% if app.request.query.has('prev') is empty and app.request.query.get('next') is empty %}
+                                        <span class="label label-primary arrowed-in-right label-lg">
                                             <b>Today</b>
                                         </span>
-                                            {% elseif date_t == "" | date_modify("+1 day") |date('Y-m-d') %}
-                                                <span class="label label-yellow arrowed-in-right label-lg">
-                                            <b>Tomorrow</b>
-                                        </span>
-                                            {% elseif date_t == "" | date_modify("-1 day") |date('Y-m-d') %}
-                                                <span class="label label-default arrowed-in-right label-lg">
+                                    {%  elseif app.request.query.get('prev') == 1 %}
+                                        <span class="label label-success arrowed-in-right label-lg">
                                             <b>Yesterday</b>
                                         </span>
-                                            {% else %}
-                                                <span class="label label-primary arrowed-in-right label-lg">
-                                            <b>{{ item.start | date('d/m/Y') }}</b>
-                                         </span>
-                                            {% endif %}
+                                    {%  elseif app.request.query.get('next') == 1 %}
+                                        <span class="label label-yellow arrowed-in-right label-lg">
+                                            <b>Tomorrow</b>
+                                        </span>
+                                    {% elseif app.request.query.get('next') > 1 %}
+                                        <span class="label label-default arrowed-in-right label-lg">
+                                            <b>{{ dateStart | date('d/M/Y')}} </b>
+                                        </span>
+                                    {% elseif app.request.query.get('prev') > 1 %}
+                                        <span class="label label-primary arrowed-in-right label-lg">
+                                            <b>{{ dateStart | date('d/M/Y')}}</b>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                {% for timeline in pagination %}
+                                    {% set background_item = timeline.calendar.color is not empty ? 'background-color: '~timeline.calendar.color~'; border-color: '~timeline.calendar.color~';' %}
+                                    {% set border_left_color = timeline.calendar.color is not empty ? 'border-left: 3px solid '~timeline.calendar.color~'!important;' %}
+                                    {% set textColor_item = timeline.calendar.textColor is not empty ? 'color: '~timeline.calendar.textColor~';' %}
 
-                                        </div>
-                                        {% for item_ in pagination.items %}
+                                    <div class="timeline-items">
+                                        <div class="timeline-item clearfix">
+                                            <div class="timeline-info">
+<!--                                                <img alt="Susan't Avatar" src="assets/images/avatars/avatar1.png"/>-->
+                                                <span class="label label-info label-sm">{{ timeline.start | date('H:i') }}</span>
+                                            </div>
 
-                                            {% set sDate = item_.start | date("Y-m-d") %}
-                                            {% set sEnd = item_.start | date("Y-m-d") %}
-                                            {% set dDate = item.start | date("Y-m-d") %}
+                                            <div class="widget-box transparent collapsed">
+                                                <div class="widget-header widget-header-small" style="{{ background_item ~ textColor_item }}">
+                                                    <h5 class="widget-title smaller">
+                                                        <span>{{ timeline.title }}</span>
+                                                    </h5>
+                                                    <span class="widget-toolbar no-border">
+                                                        end:
+                                                        {{ timeline.end is not empty ? timeline.end | date('d/M')  }}
+                                                        <i class="ace-icon fa fa-clock-o bigger-110"></i>
+                                                        {{ timeline.end is not empty ? timeline.end | date('H:i')  }}
+                                                    </span>
 
-                                            {% if sDate >= dDate and sEnd <= dDate %}
-                                                <div class="timeline-items">
-                                                    <div class="timeline-item clearfix">
-                                                        {% if item_.icon is not empty %}
-                                                            <div class="timeline-info">
-                                                                <i style="{{ item_.color is not empty ? 'background-color: '~item_.color~'; ' : 'background-color: #3A87AD;' }}
-                                                            {{ item_.textColor is not empty ? 'color: '~item_.textColor~'; ' }}"
-                                                                   class="timeline-indicator ace-icon fa {{ item_.icon }} no-hover">
-                                                                </i>
+
+                                                    <span class="widget-toolbar">
+                                                        <a href="#"
+                                                           {% if timeline.tagsCount > 0 %}
+                                                           onclick="return window.loadTimelineBody('{{ path('checklist_in_timeline_item', {
+                                                               id: timeline.id,
+                                                               start: dateStart | date("U"),
+                                                               end: dateEnd | date("U")
+                                                           }) }} ', this);"
+                                                           {% endif %}
+                                                           data-action="collapse">
+                                                            <i class="ace-icon fa fa-chevron-down"></i>
+                                                        </a>
+                                                    </span>
+                                                    <span class="widget-toolbar no-border">
+                                                         <a href="#" style="{{ textColor_item }}">{{ timeline.calendar.title }}</a>
+                                                    </span>
+                                                </div>
+
+                                                <div class="widget-body">
+                                                    <div class="widget-main">
+                                                        {{ timeline.about }}
+
+                                                        <div class="space-6"></div>
+                                                        <div class="checklist-items"></div>
+
+                                                        <div class="widget-toolbox clearfix">
+                                                            <div class="pull-left">
+
                                                             </div>
-                                                        {% endif %}
-                                                        {% if showed2 != item_.start | date('U') %}
-                                                         <span class="label label-info label-sm">{{ item_.start | date('H:i') }}</span>
-                                                        {% endif %}
-                                                        {% set showed2 = item_.start | date('U') %}
-                                                        <div class="widget-box transparent">
-                                                            <div class="widget-header widget-header-small">
-                                                                <h5 class="widget-title smaller">
-                                                                    <a href="{{ path('calendar_show', {
-                                                                        id: item_.calendar.id,
-                                                                        item: item_.id
-                                                                    }) }}" class="blue">{{ item_.title }}</a>
-                                                                </h5>
-                                                                <span class="widget-toolbar">
-                                                              <a href="{{ path("timeline_status", {id: item_.id}) }}">
-                                                        <i class="ace-icon fa fa-check green bigger-130"></i>
-                                                    </a>
-                                                    <a href="{{ path("calendar_show", {
-                                                        id: item_.calendar.id,
-                                                        item: item_.id
-                                                    }) }}">
-                                                        <i class="ace-icon fa fa-pencil blue bigger-125"></i>
-                                                    </a>
 
-                                                            </span>
-                                                            </div>
+                                                            <div class="pull-right action-buttons">
+                                                                <a href="{{ path("timeline_status", {id: timeline.id}) }}">
+                                                                    <i class="ace-icon fa fa-check green bigger-130"></i>
+                                                                </a>
 
-                                                            {% set background = item_.color is not empty ? 'background-color: '~item_.color~'!important;' %}
-                                                            {% set textColor = item_.textColor is not empty ? 'color: '~item_.textColor~'!important;' %}
-                                                            <div class="widget-body"
-                                                                 style="{{ background ~ textColor }}">
-                                                                <div class="widget-main">
-                                                                    {{ item_.about }}
-                                                                </div>
+                                                                <a href="{{ path('calendar_show', {
+                                                                    id: timeline.calendar.id,
+                                                                    item: timeline.id
+                                                                }) }}">
+                                                                    <i class="ace-icon fa fa-pencil blue bigger-125"></i>
+                                                                </a>
+
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- /.timeline-items -->
 
-                                                </div><!-- /.timeline-items -->
-                                            {% else %}
-
-                                            {% endif %}
-
-                                        {% endfor %}
-                                    </div><!-- /.timeline-container -->
-                                {% endif %}
-                                {% set showed = (item.start | date("Y-m-d")) %}
-
-                            {% endfor %}
+                                {% endfor %}
+                            </div><!-- /.timeline-container -->
+                            {% include 'timeline/back_next.html.twig' with {prev: prev, next: next} %}
                         {% else %}
                             {% include 'elements/emty-items.html.twig' %}
                         {% endif %}

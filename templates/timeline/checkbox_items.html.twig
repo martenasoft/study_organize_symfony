@@ -1,0 +1,54 @@
+{% if items is not empty %}
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+    <h3 class="row header smaller lighter orange">
+        <span class="col-sm-8">
+            <i class="ace-icon fa fa-hashtag"></i>
+            Checklist. Tags: {{ hashtags }}
+
+        </span><!-- /.col -->
+        <span class="col-sm-4">
+            <label class="pull-right inline">
+                  <a href="{{ path('checklist_index', {q: hashtags}) }}">
+                <span class="muted">Go to checklist:</span>
+
+                    <i class="ace-icon fa fa-check-square-o red bigger-125"
+                       style="padding-right: 10px;"></i>
+                </a>
+            </label>
+        </span>
+    </h3>
+
+    <div class="message-list-container">
+    {% for item in items %}
+        {% set isChecked = checkedByDateItems[item.id] is defined and checkedByDateItems[item.id].status == 2 %}
+        <div class="message-list" id="message-list-{{ item.id }}">
+            <div class="message-item message-unread">
+                <label class="inline" >
+                    <input type="checkbox" class="ace"
+                            onclick="window.checklistChangeStatus(
+                                '{{ path('save_daily_status', {
+                                        id: calendarItem.id,
+                                        datatype: constant('App\\Entity\\DailyChecklist::CHECK_LIST_TYPE'),
+                                        record: item.id,
+                                        unixtime: app.request.get('start')
+                                    }) }}',
+                                    this,
+                                    {
+                                        true:  '{{ constant('App\\Entity\\Interfaces\\StatusInterface::STATUS_DONE') }}' ,
+                                        false: '{{ constant('App\\Entity\\Interfaces\\StatusInterface::STATUS_ACTIVE') }}'
+                                    }
+                                    );"
+                            {{ isChecked ? "checked" }} />
+                    <span class="lbl"></span>
+                </label>
+                <span class="sender" title="{{ item.title }}"
+                      style="{{ isChecked == 2 ? 'text-decoration: line-through' }} ">
+                    {{ item.title }}
+                </span>
+            </div>
+        </div>
+
+    {% endfor %}
+    </div>
+    </div>
+{% endif %}

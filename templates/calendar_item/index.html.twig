@@ -10,6 +10,10 @@
 
 {% block h1 %}
     Calendars index
+
+    {% if app.request.get('q') is not empty %}
+        {{ '(save cheklis by hashtag: '~app.request.get('q') ~')' }}
+    {% endif %}
 {% endblock %}
 
 {% block search_input %}
@@ -17,18 +21,45 @@
 {% endblock %}
 
 {% block body %}
-    <div class="navigation">
-        {{ knp_pagination_render(pagination) }}
-    </div>
+    {% include 'elements/pagination.html.twig' with { pagination: pagination, isTop: true } %}
     <div class="row">
         {{ form_start(calendarFilterType) }}
+        {% if app.request.query.has('q') %}
+            <input type="hidden" name="q" value="{{ app.request.query.get('q')  }}">
+        {% endif %}
+
         <table class="table">
             <thead>
+
             <tr>
-                <td><div>{{ form_label(calendarFilterType.calendar) }}</div><div>{{ form_widget(calendarFilterType.calendar) }}</div></td>
+                {% if app.request.get('q') is not empty %}
+                    <td>
+                       Save: {{ app.request.get('q')}}
+                    </td>
+                {% endif %}
+                <td>
+                    <div class="form-group {{ calendarFilterType.calendar.vars.valid  == false ? 'has-error' }}">
+                        <div>{{ form_label(calendarFilterType.calendar) }} </div>
+                        <div>{{ form_widget(calendarFilterType.calendar) }} {{ form_errors(calendarFilterType.calendar) }}</div>
+                    </div>
+                </td>
                 <td>{{ form_row(calendarFilterType.title) }}</td>
-                <td>{{ form_row(calendarFilterType.dateStartEnd) }}</td>
-                <td><div style="margin-top: 25px">
+                <td>
+                    <div class="form-group {{ calendarFilterType.dateStartEnd.vars.valid  == false ? 'has-error' }}">
+                    {{ form_label(calendarFilterType.dateStartEnd) }}
+                    <div class="input-group">
+
+                        <span class="input-group-addon">
+                           <a href="#" onclick="document.getElementById('calendar_item_dateStartEnd').value = '';">
+                               <i class="glyphicon glyphicon-remove"></i></a>
+                        </span>
+                        {{ form_widget(calendarFilterType.dateStartEnd) }}
+                    </div>
+                    </div>
+
+                </td>
+                <td>
+                    <div style="margin-top: 25px">
                         <button class="btn btn-default btn-sm" type="submit">
                             <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
                         </button>
@@ -43,8 +74,17 @@
             </thead>
             <tbody>
             {% for calendar_item in pagination %}
-                <tr>
-                    <td width="60%">{{ calendar_item.title }}</td>
+                <tr valign="middle">
+                    {% if app.request.get('q') is not empty %}
+                        <td>
+                            <a href="{{ path('save_tag_to_calendar_item', {
+                                'id': calendar_item.id,
+                                'q': app.request.get('q')
+
+                            }) }}" class="btn btn-default btn-sm">Save tags</a>
+                        </td>
+                    {% endif %}
+                    <td colspan="2" width="55%">{{ calendar_item.title }}</td>
                     <td>
                         {{ calendar_item.start ? calendar_item.start|date('d/m/Y H:i') : '' }}
                         {{ calendar_item.end ? ' - '~calendar_item.end|date('d/m/Y H:i') : '' }}
@@ -52,23 +92,13 @@
 
                     <td>
                         <a href="{{ path('calendar_item_show', {'id': calendar_item.id}) }}">show</a>
-                        <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
+                        {% if calendar_item.calendar.user.id == app.user.id %}
+                            <a href="{{ path('calendar_item_edit', {'id': calendar_item.id}) }}">edit</a>
+                       {% endif %}
+
                     </td>
                 </tr>
-                {% if calendar_item.about is not empty %}
-                    <tr>
-                        <td colspan="3">
-                            <div class="col-xs-12">
-                                <blockquote>
-                                    <p><strong>About</strong></p>
-                                    {{ calendar_item.about }}
 
-                                </blockquote>
-                            </div>
-
-                        </td>
-                    </tr>
-                {% endif %}
             {% else %}
                 <tr>
                     <td colspan="10">no records found</td>
@@ -77,9 +107,8 @@
             </tbody>
         </table>
         {{ form_end(calendarFilterType) }}
-        <a href="{{ path('calendar_item_new') }}">Create new</a>
     </div>
-    <div class="navigation">
-        {{ knp_pagination_render(pagination) }}
-    </div>
+    {% include 'elements/pagination.html.twig' with {pagination: pagination} %}
+
+
 {% endblock %}

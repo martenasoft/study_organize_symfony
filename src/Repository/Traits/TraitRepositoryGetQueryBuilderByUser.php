@@ -14,6 +14,7 @@ trait TraitRepositoryGetQueryBuilderByUser
         ?QueryBuilder $queryBuilder = null,
         ?string $indexBy = null
     ): QueryBuilder {
+
         $queryBuilder = $this->getAllQueryBuilder($queryBuilder, $indexBy);
         return $queryBuilder
             ->andWhere($this->getAlias().".user=:user")

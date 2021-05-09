@@ -1,0 +1,17 @@
+<div class="row">
+    {% if pack_path is defined and pack_path is not empty %}
+        <div class="col-sm-6"><a href="{{ pack_path }}" class="btn btn-default">Cancel</a></div>
+    {% endif %}
+    <div class="col-sm-6">
+        <div class="pull-right">
+            {% if delete_path is defined and delete_path is not empty %}
+                <a href="{{ delete_path }}" onclick="return confirm('Delete this item?')" class="btn btn-danger">
+                    <i class="ace-icon fa fa-trash-o"></i>
+                    Delete
+                </a>
+            {% endif %}
+            <button class="btn">{{ button_label|default('Save') }}</button>
+        </div>
+
+    </div>
+</div>

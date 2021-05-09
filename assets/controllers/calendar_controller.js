@@ -7,12 +7,15 @@ jQuery(function ($) {
 
     $('.date-picker').datepicker({
         autoclose: true,
+
         todayHighlight: true,
         format: dateFormat2
     });
 
 
-    $('#calendar_item_dateRange, #calendar_item_dateStartEnd').daterangepicker({
+    $('#calendar_item_dateRange')
+
+        .daterangepicker({
         'applyClass' : 'btn-sm btn-success',
         'cancelClass' : 'btn-sm btn-default',
         opens: 'left',
@@ -22,7 +25,10 @@ jQuery(function ($) {
             applyLabel: 'Apply',
             cancelLabel: 'Cancel',
         }
-    })
+    });
+
+
+
 
     const getDateFormat = function (date) {
         const mm = date._d.getMonth() + 1;
@@ -117,8 +123,6 @@ jQuery(function ($) {
                     // if so, remove the element from the "Draggable Events" list
                     $(this).remove();
                 }
-
-
             }
             ,
             selectable: true,

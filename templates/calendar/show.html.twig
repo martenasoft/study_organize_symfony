@@ -140,8 +140,8 @@
         const changeData = function (id, start, end) {
             window.location.href = "{{ path('calendar_item_change_data') }}/" + id + "/" + start + "/" + end;
         };
-        const redirectToEdit = function (id) {
-            window.location.href = "{{ path('calendar_show', {id:calendarId}) }}/" + id;
+        const redirectToEdit = function (id, itemId) {
+            window.location.href = "{{ path('calendar_show', {id:calendarId}) }}/" + itemId;
         };
 
 

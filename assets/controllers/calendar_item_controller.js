@@ -1,8 +1,23 @@
-$(function() {
+$(function () {
+
+    $(' #calendar_item_dateStartEnd')
+        .daterangepicker({
+            'applyClass': 'btn-sm btn-success',
+            'cancelClass': 'btn-sm btn-default',
+            opens: 'left',
+            timePicker: true,
+            autoUpdateInput: false,
+            locale: {
+                format: 'DD/MM/YYYY hh:mm',
+                applyLabel: 'Apply',
+                cancelLabel: 'Cancel',
+            }
+        });
+
     $('#calendar_item_calendars, #calendar_item_calendar').multiselect({
         enableFiltering: true,
         enableHTML: true,
-        buttonClass: 'btn btn-white btn-primary',
+        buttonClass: 'btn btn-white ',
         templates: {
             button: '<button type="button" class="multiselect dropdown-toggle form-control" data-toggle="dropdown"><span class="multiselect-selected-text"></span> &nbsp;<b class="fa fa-caret-down"></b></button>',
             ul: '<ul class="multiselect-container dropdown-menu"></ul>',

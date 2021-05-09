@@ -30,7 +30,6 @@
                 <th>Color</th>
                 <th>TextColor</th>
                 <th>User</th>
-
                 <th>actions</th>
             </tr>
         </thead>
@@ -39,8 +38,8 @@
             <tr>
                 <td>{{ calendar.title }}</td>
                 <td>{{ calendar.status }}</td>
-                <td>{{ calendar.color }}</td>
-                <td>{{ calendar.textColor }}</td>
+                <td style="background: {{ calendar.color }}; {{ calendar.textColor is not empty ? 'color: '~ calendar.textColor }}">{{ calendar.color }}</td>
+                <td >{{ calendar.textColor }}</td>
                 <td>{{ calendar.user.email }}</td>
                 <td>
                     <a href="{{ path('calendar_show', {'id': calendar.id}) }}">show</a>
@@ -58,5 +57,4 @@
     <div class="navigation">
         {{ knp_pagination_render(pagination) }}
     </div>
-    <a href="{{ path('calendar_new') }}">Create new</a>
 {% endblock %}

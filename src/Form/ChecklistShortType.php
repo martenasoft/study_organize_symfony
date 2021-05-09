@@ -25,6 +25,11 @@ class ChecklistShortType extends AbstractType
                 'label' => false,
                 'attr' => ['autofocus' => true,'placeholder' => 'New checklist item']
             ])
+            ->add('hashtag', TextType::class, [
+                'label' => false,
+                'attr' => ['placeholder' => 'Hashtag'],
+                'required' => false
+            ])
         ;
     }
 

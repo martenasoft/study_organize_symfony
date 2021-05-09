@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Calendar;
 use App\Entity\CalendarItem;
+use App\Entity\CalendarItemChecklistTags;
 use App\Entity\Filter\CalendarItem as CalendarItemFilter;
 use App\Entity\Interfaces\StatusInterface;
 use App\Form\Filter\CalendarItemType as CalendarItemTypeFilter;
@@ -32,8 +33,7 @@ class CalendarItemController extends AbstractController
         EntityManagerInterface $entityManager,
         CalendarRepository $calendarRepository,
         CalendarItemRepository $calendarItemRepository
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->calendarRepository = $calendarRepository;
         $this->calendarItemRepository = $calendarItemRepository;
@@ -44,8 +44,7 @@ class CalendarItemController extends AbstractController
      */
     public function getItems(
         Request $request
-    ): Response
-    {
+    ): Response {
         $calendarId = $request->query->get('calendarId');
         $start = $request->query->get('start');
         $end = $request->query->get('end');
@@ -95,26 +94,33 @@ class CalendarItemController extends AbstractController
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $calendarFilterEntity = new CalendarItemFilter();
-
-        $calendarFilterType = $this->createForm(CalendarItemTypeFilter::class, $calendarFilterEntity, [
-            'user' => $this->getUser()
-        ]);
+        $calendarFilterType = $this->createForm(
+            CalendarItemTypeFilter::class,
+            $calendarFilterEntity,
+            [
+                'user' => $this->getUser()
+            ]
+        );
 
         $calendarFilterType->handleRequest($request);
 
         $queryBuilder = $this
             ->calendarItemRepository
-            ->getItemsByUserQueryBuilder($this->getUser(), $calendarFilterType);
+            ->getItemsByUserQueryBuilder($this->getUser(), $calendarFilterType)
+            ->orderBy($this->calendarItemRepository->getAlias().'.id', 'DESC');
 
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1)
 
         );
-        return $this->render('calendar_item/index.html.twig', [
-            'pagination' => $pagination,
-            'calendarFilterType' => $calendarFilterType->createView()
-        ]);
+        return $this->render(
+            'calendar_item/index.html.twig',
+            [
+                'pagination' => $pagination,
+                'calendarFilterType' => $calendarFilterType->createView()
+            ]
+        );
     }
 
     /**
@@ -122,32 +128,69 @@ class CalendarItemController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $calendars = $request->query->get('calendar_item');
-
         $calendarItem = new CalendarItem();
+
+        $calendars = $request->get('calendar_item');
+        $selectedCalendarsItems = null;
+
+        if (!empty($calendars['calendar'])) {
+            $selectedCalendarsItems = $this
+                ->calendarRepository
+                ->getItemsByUserAndItemsIds($this->getUser(), $calendars['calendar'])
+                ->getQuery()
+                ->getResult();
+        }
+
         $calendarItem->setCreatedAt(new \DateTime('now'));
         $calendarItem->setStatus(StatusInterface::STATUS_ACTIVE);
-        $form = $this->createForm(CalendarItemType::class, $calendarItem, [
-            'user' => $this->getUser()
-        ]);
-
-
-        dump($request->query->get('calendar_item')); die;
+        $form = $this->createForm(
+            CalendarItemType::class,
+            $calendarItem,
+            [
+                'user' => $this->getUser(),
+                'calendars' =>  $selectedCalendarsItems
+            ]
+        );
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($calendarItem);
-            $entityManager->flush();
+            $calendars = $form->get('calendars')->getData();
+            foreach ($calendars as $index=>$calendar) {
+                $calendarItem->setCalendar($calendar);
+
+                if ($index > 0) {
+                    $this->entityManager->persist(clone $calendarItem);
+                } else {
+                    $this->entityManager->persist($calendarItem);
+                }
+            }
+
+            $this->entityManager->flush();
+            $q = $request->query->get('q');
+
+            if (!empty($q)) {
+                $calendarItemChecklistTags = new CalendarItemChecklistTags();
+                $calendarItemChecklistTags
+                    ->setTag(trim($q))
+                    ->setUser($this->getUser())
+                    ->setCalendarItem($calendarItem);
+
+                $this->entityManager->persist($calendarItemChecklistTags);
+                $calendarItem->setTagsCount($calendarItem->getTagsCount() + 1);
+                $this->entityManager->flush();
+            }
 
             return $this->redirectToRoute('calendar_item_show');
         }
 
-        return $this->render('calendar_item/new.html.twig', [
-            'calendar_item' => $calendarItem,
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'calendar_item/new.html.twig',
+            [
+                'calendar_item' => $calendarItem,
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     /**
@@ -158,9 +201,12 @@ class CalendarItemController extends AbstractController
         if (empty($calendarItem)) {
             throw new NotFoundHttpException();
         }
-        return $this->render('calendar_item/show.html.twig', [
-            'calendar_item' => $calendarItem,
-        ]);
+        return $this->render(
+            'calendar_item/show.html.twig',
+            [
+                'calendar_item' => $calendarItem,
+            ]
+        );
     }
 
     /**
@@ -168,19 +214,33 @@ class CalendarItemController extends AbstractController
      */
     public function edit(Request $request, CalendarItem $calendarItem): Response
     {
-        $form = $this->createForm(CalendarItemType::class, $calendarItem);
+
+        if ($calendarItem->getCalendar()->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+        $form = $this->createForm(CalendarItemType::class, $calendarItem, [
+            'user' => $this->getUser(),
+            'calendars' => [$calendarItem->getCalendar()],
+            'isMultiple' => false
+        ]);
+
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $calendarItem->setUpdatedAt(new \DateTime('now'));
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('calendar_item_index');
         }
 
-        return $this->render('calendar_item/edit.html.twig', [
-            'calendar_item' => $calendarItem,
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'calendar_item/edit.html.twig',
+            [
+                'calendar_item' => $calendarItem,
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     /**
@@ -188,6 +248,9 @@ class CalendarItemController extends AbstractController
      */
     public function moveToBin(Request $request, CalendarItem $calendarItem): Response
     {
+        if ($calendarItem->getCalendar()->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
         $calendarItem->setStatus(StatusInterface::STATUS_DELETED);
         $calendarItem->getDeletedAt(new \DateTime('now'));
         $this->entityManager->flush();

@@ -63,14 +63,17 @@
                 <div class="row">
                     {% if isShortForm == true %}
                         {{ form_start(form,  {action:  path('checklist_index', app.request.query.all() )}) }}
-                        <div class="col-sm-8">
+                        <div class="col-sm-6">
                             {{ form_row(form.title) }}
                         </div>
                         <div class="col-sm-2">
-                          <button class="btn btn-sm btn-success pull-left">
-                            <i class="ace-icon fa fa-check align-top bigger-125"></i>
-                            Save
-                        </button>
+                            {{ form_row(form.hashtag) }}
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-sm btn-success pull-left">
+                                <i class="ace-icon fa fa-check align-top bigger-125"></i>
+                                Save
+                            </button>
                         </div>
                         <div class="col-sm-2">
                             <div class="pull-right">
@@ -78,13 +81,12 @@
                                     more checklist params...</a>
                             </div>
                         </div>
-
                         {{ form_end(form) }}
                     {% endif %}
 
                     <div class="col-sm-12">
 
-                    <h3 class="row header smaller lighter orange">
+                        <h3 class="row header smaller lighter orange">
                         <span class="col-sm-8">
                             <i class="ace-icon fa fa-hashtag"></i>
                             Filtered by tags:
@@ -92,75 +94,84 @@
                                 {{ app.request.query.get('q') }}
                             {% endif %}
                         </span><!-- /.col -->
-                        <span class="col-sm-4">
-<!--												<label class="pull-right inline">
-													<small class="muted">Check all:</small>
+                            {% if app.request.query.get('q') is not empty %}
+                            <span class="col-sm-4">
+                                <label class="pull-right inline">
+                                      <a href="{{ path('calendar_item_index', app.request.query.all) }}">
+                                    <span class="muted">Add to calendar:</span>
 
-													<input id="gritter-light" checked="" type="checkbox" class="ace ace-switch ace-switch-5">
-													<span class="lbl middle"></span>
-												</label>-->
-											</span>
-                    </h3>
+                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                           style="padding-right: 10px;"></i>
+                                    </a>
+
+                                </label>
+                            </span>
+
+                        {% endif %}
+                        </h3>
                     </div>
 
                     <div class="message-list-container">
 
-                    {% for item in pagination %}
-                        <div class=" message-item col-sm-{{ 12 / app.request.query.get('show-as', 1) }}">
-                            <table width="100%" border="0">
-                                <tr style="{{ item.color is not empty ? 'background:'~item.color~';' }}"
-                                    class=" message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
-                                    <td width="3%">{{ loop.index }}</td>
-                                    <td width="3%">
-                                        <input type="checkbox"
-                                                {{ item.status == 2 ? 'checked' }}
-                                               onclick="document.location.href = '{{ path('checklist_status', {id:item.id}|merge(app.request.query.all())) }}';"
-                                               class="ace"/>
-                                        <span class="lbl"></span>
-                                    </td>
-                                    <td width="30%">
+                        {% for item in pagination %}
+                            <div class=" message-item col-sm-{{ 12 / app.request.query.get('show-as', 1) }}">
+                                <table width="100%" border="0">
+                                    <tr style="{{ item.color is not empty ? 'background:'~item.color~';' }}"
+                                        class=" message-unread {{ app.request.get('id') == item.id ? 'selected' }} ">
+                                        <td width="3%">{{ loop.index }}</td>
+                                        <td width="3%">
+                                            <input type="checkbox"
+                                                    {{ item.status == 2 ? 'checked' }}
+                                                   onclick="document.location.href = '{{ path('checklist_status', {id:item.id}|merge(app.request.query.all())) }}';"
+                                                   class="ace"/>
+                                            <span class="lbl"></span>
+                                        </td>
+                                        <td width="30%">
                                      <span style=" {{ item.status == 2 ? 'text-decoration: line-through' }} "
                                            class=" {{ item.status == 2 ? 'text-muted' : 'sender' }}"
                                            title="{{ item.title }}">{{ item.title }}</span>
-                                    </td>
-                                    <td width="45%">
+                                            {% if item.hashtag is not empty %}
+                                                ({{ item.hashtag }})
+                                            {% endif %}
+                                        </td>
+                                        <td width="45%">
                                     <span style="{{ item.status == 2 ? 'text-decoration: line-through' }} "
                                           class=" {{ item.status == 2 ? 'text-muted' : 'text' }}">
                                         {{ item.about }}
                                     </span>
-                                    </td>
-                                    {% if  app.request.query.get('show-as') < 3 %}
-                                        <td width="20%">
-                                            <div class="pull-right">
-
-                                                {% if item.status == 1 %}
-                                                    <a href="{{ path('checklist_calendar', {id: item.id}) }}">
-                                                        <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
-                                                           style="padding-right: 10px;"></i>
-                                                    </a>
-                                                {% else %}
-                                                    <i class="ace-icon fa fa-calendar-plus-o grey bigger-125"
-                                                       style="padding-right: 10px;"></i>
-                                                {% endif %}
-                                                <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
-                                                            class="ace-icon fa fa-pencil blue bigger-125"></i></a>
-
-                                                {% if item.externalLink is not empty %}
-                                                    <a href="{{ item.externalLink }} " target="_blank">
-                                                        <i class="ace-icon fa fa-share  red bigger-125"></i>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
                                         </td>
-                                    {% endif %}
-                                </tr>
-                            </table>
-                        </div>
-                        {% if app.request.query.get('show-as', 1) > 1
-                            and (loop.revindex + 1 == app.request.query.get('show-as', 1))%}
-                            <div class="col-sm-12"></div>
-                        {% endif %}
-                    {% endfor %}
+                                        {% if  app.request.query.get('show-as') < 3 %}
+                                            <td width="20%">
+                                                <div class="pull-right">
+
+                                                    {% if item.status == 1 %}
+                                                        <a href="{{ path('checklist_calendar', {id: item.id}) }}">
+                                                            <i class="ace-icon fa fa-calendar-plus-o red bigger-125"
+                                                               style="padding-right: 10px;"></i>
+                                                        </a>
+                                                    {% else %}
+                                                        <i class="ace-icon fa fa-calendar-plus-o grey bigger-125"
+                                                           style="padding-right: 10px;"></i>
+                                                    {% endif %}
+                                                    <a href="{{ path('checklist_index', {id: item.id}|merge(app.request.query.all())) }}"><i
+                                                                class="ace-icon fa fa-pencil blue bigger-125"></i></a>
+
+                                                    {% if item.externalLink is not empty %}
+                                                        <a href="{{ item.externalLink }} " target="_blank">
+                                                            <i class="ace-icon fa fa-share  red bigger-125"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                            </div>
+                            {% if app.request.query.get('show-as', 1) > 1
+                                and (loop.revindex + 1 == app.request.query.get('show-as', 1)) %}
+                                <div class="col-sm-12"></div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -192,11 +203,11 @@
                 (https://www.playphrase.me)
 
                 {% if pagination.getTotalItemCount > 0 %}
-                <div class="form-group">
-                    <a href="{{ path("checklist_index", app.request.query.all()| filter((k,v) => v != 'all-form')) }}">
-                        hide this form
-                    </a>
-                </div>
+                    <div class="form-group">
+                        <a href="{{ path("checklist_index", app.request.query.all()| filter((k,v) => v != 'all-form')) }}">
+                            hide this form
+                        </a>
+                    </div>
                 {% endif %}
                 <hr>
                 <div class="row">

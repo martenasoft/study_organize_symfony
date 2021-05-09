@@ -1,6 +1,16 @@
 {{ form_start(form) }}
-    {{ form_row(form.calendar) }}
-    {{ form_row(form.dateRange) }}
+
+<div class="form-group">
+    {% if calendar_item.id is defined and calendar_item.id is not empty %}
+        <div>{{ form_label(form.calendar) }}</div>
+        {{ form_widget(form.calendar) }}
+    {% else %}
+        <div>{{ form_label(form.calendars) }}</div>
+        {{ form_widget(form.calendars) }}
+    {% endif %}
+
+</div>
+{{ form_row(form.dateRange) }}
     {{ form_row(form.title) }}
     {{ form_row(form.about) }}
 
@@ -48,11 +58,16 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
 </div>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{% include 'elements/form_butons_bottom.html.twig' with {
+    pack_path: path('calendar_item_index'),
+    delete_path: calendar_item.id is defined and calendar_item.id is not empty
+    ? path('move_calendar_item_to_bin', {id: calendar_item.id}) : null
+} %}
+
 {{ form_end(form) }}

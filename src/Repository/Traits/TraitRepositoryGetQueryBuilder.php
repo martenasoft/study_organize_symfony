@@ -11,7 +11,7 @@ trait TraitRepositoryGetQueryBuilder
     public function getAllQueryBuilder(?QueryBuilder $queryBuilder = null, ?string $indexBy = null): QueryBuilder
     {
         if ($queryBuilder === null) {
-            $queryBuilder = $this->createQueryBuilder($this->getAlias());
+            $queryBuilder = $this->createQueryBuilder($this->getAlias(), $indexBy);
         }
 
         return $queryBuilder;

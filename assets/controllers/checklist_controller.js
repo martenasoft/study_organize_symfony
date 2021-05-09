@@ -1,5 +1,23 @@
 import './../js/bootstrap-tag.min.js';
 
+window.checklistChangeStatus = function (url, obj, statuses) {
+
+    console.log(statuses);
+    url += '/' + statuses[obj.checked];
+    console.log(url);
+    $.getJSON(url, function (data) {
+        if (data.result === undefined || data.result != 'ok') {
+            obj.checked = !obj.checked;
+            return;
+        }
+        let sender = $(obj).closest('.message-list').find('.sender');
+        sender.css('text-decoration', 'none');
+        if (obj.checked) {
+            sender.css('text-decoration', 'line-through');
+        }
+    });
+}
+
 $(function () {
 
     $('.calendar_item_dateRange').daterangepicker({

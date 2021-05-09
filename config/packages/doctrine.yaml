@@ -1,6 +1,5 @@
 doctrine:
     dbal:
-        override_url: true
         url: '%env(resolve:DATABASE_URL)%'
 
         # IMPORTANT: You MUST configure your server version,
@@ -17,3 +16,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        dql:
+            string_functions:
+                FIND_IN_SET: 'App\DoctrineExtensions\Query\Mysql\FindInSet'
+                WEEK: 'App\DoctrineExtensions\Query\Mysql\Week'
+                MONTH: 'App\DoctrineExtensions\Query\Mysql\Month'
+                DAYOFWEEK: 'App\DoctrineExtensions\Query\Mysql\DayOfWeek'
+                CURDATE: 'App\DoctrineExtensions\Query\Mysql\CurDate'
+                NOW: 'App\DoctrineExtensions\Query\Mysql\Now'
+                DATEFORMAT: 'App\DoctrineExtensions\Query\Mysql\DateFormat'

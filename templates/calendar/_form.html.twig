@@ -1,4 +1,8 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {% include 'elements/form_butons_bottom.html.twig' with {
+        pack_path: path('calendar_show_as_table'),
+        delete_path: calendar.id is defined and calendar.id is not empty
+        ? path('move_calendar_to_bin', {id: calendar.id}) : null
+    } %}
 {{ form_end(form) }}

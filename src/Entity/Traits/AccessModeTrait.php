@@ -4,11 +4,11 @@ namespace App\Entity\Traits;
 
 trait AccessModeTrait
 {
-    private bool $isUserRead;
-    private bool $isUserWrite;
+    private bool $isUserRead = false;
+    private bool $isUserWrite = false;
 
-    private bool $isGroupRead;
-    private bool $isGroupWrite;
+    private bool $isGroupRead = false;
+    private bool $isGroupWrite = false;
 
     public function isUserRead(): bool
     {

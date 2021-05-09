@@ -114,10 +114,10 @@ class CalendarController extends AbstractController
      */
     public function show(Request $request, Calendar $calendar, ?int $item = null): Response
     {
-
         $calendarItem = null;
         if (!empty($item)) {
             $calendarItem = $this->entityManager->find(CalendarItem::class, $item);
+
         }
         $id = null;
         if (empty($calendarItem))  {
@@ -130,11 +130,12 @@ class CalendarController extends AbstractController
             $id = $calendarItem->getId();
         }
 
-        $calendarItemForm = $this->createForm(CalendarItemType::class, $calendarItem);
+        $calendarItemForm = $this->createForm(CalendarItemType::class, $calendarItem, [
+            'user' => $this->getUser(),
+            'hide_calendar' => true
+        ]);
         $calendarItemForm->handleRequest($request);
-
         if ($calendarItemForm->isSubmitted() && $calendarItemForm->isValid()) {
-
             $this->entityManager->persist($calendarItem);
             $this->entityManager->flush();
             return $this->redirectToRoute('calendar_show', ['id' => $calendar->getId()]);
@@ -153,6 +154,9 @@ class CalendarController extends AbstractController
      */
     public function edit(Request $request, Calendar $calendar): Response
     {
+        if ($calendar->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
         $form = $this->createForm(CalendarType::class, $calendar);
         $form->handleRequest($request);
 
@@ -169,12 +173,27 @@ class CalendarController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/{id}/move-to-bin", name="move_calendar_to_bin", methods={"GET"})
+     */
+    public function moveToBin(Calendar $calendar): Request
+    {
+        $calendar->setStatus(StatusInterface::STATUS_DELETED);
+        $calendar->setDeletedAt(new \DateTime('now'));
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('calendar_show_as_table');
+    }
 
     /**
      * @Route("/{id}", name="calendar_delete", methods={"POST"})
      */
     public function delete(Request $request, Calendar $calendar): Response
     {
+        if ($calendar->getUser()->getId() != $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
         if ($this->isCsrfTokenValid('delete'.$calendar->getId(), $request->request->get('_token'))) {
           //  $this->entityManager->remove($calendar);
            // $this->entityManager->flush();

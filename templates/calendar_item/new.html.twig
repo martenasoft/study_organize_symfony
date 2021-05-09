@@ -1,11 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New CalendarItem{% endblock %}
+{% block title %}New Calendar Item{% endblock %}
+
+{% block breadcrumbs %}
+    <li>
+    {% for calendar in form.calendars.vars.data %}
+        {{ loop.index > 1 ? " / " }}
+        <a href="{{ path('calendar_item_index', {'calendar_item[calendar]' : calendar.title}) }}" >
+                {{ calendar.title }}</a>
+
+    {% endfor %}
+    </li>
+    <li>
+        New Calendar Item
+        {{ app.request.query.get('q') is not empty ? '(for checklist tags: '~app.request.query.get('q') ~ ')' }}
+    </li>
+
+{% endblock %}
+
+{% block h1 %}
+    New Calendar Item
+    <small>{{ app.request.query.get('q') is not empty ?
+    'for checklist tags: '~app.request.query.get('q') }}</small>
+
+{% endblock %}
 
 {% block body %}
-    <h1>Create new CalendarItem</h1>
-
     {{ include('calendar_item/_form.html.twig') }}
 
-    <a href="{{ path('calendar_item_index') }}">back to list</a>
 {% endblock %}

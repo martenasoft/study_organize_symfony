@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\CalendarItem;
 use App\Entity\Checklist;
 use App\Entity\User;
 use App\Repository\Traits\TraitRepositoryByUserAndItemsIdsQueryBuilder;
@@ -35,6 +36,7 @@ class ChecklistRepository extends ServiceEntityRepository
 
     public function getTags(User $user, ?string $string): ?array
     {
+
         if (empty($string)) {
             return null;
         }
@@ -42,9 +44,31 @@ class ChecklistRepository extends ServiceEntityRepository
         return $this
             ->getQueryBuilderByUser($user)
             ->andWhere($this->getAlias().".tags LIKE :tags")
-            ->setParameter("tags", "%$string%")
+            ->setParameter("tags", '%'.trim($string).'%')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getChecklistItemsByTagsArrayQueryBuilder(User $user, array $tags): ?QueryBuilder
+    {
+        if (empty($tags)) {
+            return null;
+        }
+
+        $queryBuilder = $this
+            ->getQueryBuilderByUser($user);
+
+        $query = '';
+        foreach ($tags as $tag) {
+            $query .= (!empty($query) ? " OR " : " "). $this->getAlias().".hashtag LIKE :tag";
+            $queryBuilder->setParameter('tag', '%'.trim($tag->getTag()).'%');
+        }
+
+        $queryBuilder
+            ->andWhere("($query)")
+        ;
+
+        return $queryBuilder;
     }
 
     public function findByTitleAboutQueryBuilder(string $query, QueryBuilder $queryBuilder): void

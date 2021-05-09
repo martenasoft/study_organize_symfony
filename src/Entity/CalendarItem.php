@@ -13,6 +13,8 @@ use App\Entity\Traits\IconTrait;
 use App\Entity\Traits\StatusTrait;
 use App\Entity\Traits\TextColorTrait;
 use App\Repository\CalendarItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,13 +22,20 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CalendarItem implements StatusInterface,IconInterface, ColorInterface, TextColorInterface, ChangeDataDayInterface
 {
+    public const REPLACE_TYPE_NO = 0;
+    public const REPLACE_TYPE_DAILY = 1;
+    public const REPLACE_TYPE_IN_ONE_DAY = 2;
+    public const REPLACE_TYPE_WORK_DAYS = 3;
+    public const REPLACE_TYPE_WEEK_END = 4;
+    public const REPLACE_TYPE_IN_ONE_MONTH = 5;
+
     use StatusTrait, IconTrait, ChangeDataDayTrait, ColorTrait, TextColorTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Calendar::class, inversedBy="calendarItems")
@@ -54,6 +63,24 @@ class CalendarItem implements StatusInterface,IconInterface, ColorInterface, Tex
     private ?string $about;
 
     private ?string $dateRange;
+
+    private $calendars;
+
+    /**
+     * @ORM\Column(type="integer", options={"default":0})
+     */
+    private int $tagsCount = 0;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default":0})
+     */
+    private $replaceType = 0;
+
+
+    public function __construct()
+    {
+        $this->calendars = new ArrayCollection();
+    }
     
     public function getId(): ?int
     {
@@ -126,5 +153,40 @@ class CalendarItem implements StatusInterface,IconInterface, ColorInterface, Tex
         return $this;
     }
 
+    public function getCalendars()
+    {
+        return $this->calendars;
+    }
+
+
+    public function setCalendars($calendars)
+    {
+        $this->calendars = $calendars;
+        return $this;
+    }
+
+    public function getTagsCount(): ?int
+    {
+        return $this->tagsCount;
+    }
+
+    public function setTagsCount(int $tagsCount): self
+    {
+        $this->tagsCount = $tagsCount;
+
+        return $this;
+    }
+
+    public function getReplaceType(): ?int
+    {
+        return $this->replaceType;
+    }
+
+    public function setReplaceType(int $replaceType): self
+    {
+        $this->replaceType = $replaceType;
+
+        return $this;
+    }
 }
 

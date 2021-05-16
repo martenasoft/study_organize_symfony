@@ -58,33 +58,12 @@ class CalendarItemController extends AbstractController
             $calendarId = [$calendarId];
         }
 
-        $alias = $this
-            ->calendarItemRepository
-            ->getAlias();
-
-        $ret = [];
         $items = $this
             ->calendarItemRepository
             ->getLoadItems($this->getUser(), $calendarId, new \DateTime($start), new \DateTime($end))
-            ->getQuery()
-            ->getResult();
-
-        foreach ($items as $item) {
-            $ret[] = [
-                "id" => $item->getId(),
-                "calendar_id" => $item->getCalendar()->getId(),
-                "title" => $item->getTitle(),
-                "color" => $item->getCalendar()->getColor(),
-                "textColor" => $item->getTextColor(),
-                "about" => $item->getAbout(),
-                "className" => "label-important",
-                "start" => $item->getStart()->format('Y-m-d H:i:s'),
-                "end" => $item->getEnd()->format('Y-m-d H:i:s'),
-            ];
-        }
-
+            ;
         // return new JsonResponse($serializer->serialize($ret));
-        return $this->json($ret);
+        return $this->json(array_values($items));
     }
 
 
@@ -107,7 +86,7 @@ class CalendarItemController extends AbstractController
         $queryBuilder = $this
             ->calendarItemRepository
             ->getItemsByUserQueryBuilder($this->getUser(), $calendarFilterType)
-            ->orderBy($this->calendarItemRepository->getAlias().'.id', 'DESC');
+            ->orderBy($this->calendarItemRepository->getAlias() . '.id', 'DESC');
 
         $pagination = $paginator->paginate(
             $queryBuilder,
@@ -148,7 +127,7 @@ class CalendarItemController extends AbstractController
             $calendarItem,
             [
                 'user' => $this->getUser(),
-                'calendars' =>  $selectedCalendarsItems
+                'calendars' => $selectedCalendarsItems
             ]
         );
 
@@ -156,7 +135,7 @@ class CalendarItemController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $calendars = $form->get('calendars')->getData();
-            foreach ($calendars as $index=>$calendar) {
+            foreach ($calendars as $index => $calendar) {
                 $calendarItem->setCalendar($calendar);
 
                 if ($index > 0) {
@@ -214,15 +193,18 @@ class CalendarItemController extends AbstractController
      */
     public function edit(Request $request, CalendarItem $calendarItem): Response
     {
-
         if ($calendarItem->getCalendar()->getUser()->getId() != $this->getUser()->getId()) {
             throw $this->createAccessDeniedException();
         }
-        $form = $this->createForm(CalendarItemType::class, $calendarItem, [
-            'user' => $this->getUser(),
-            'calendars' => [$calendarItem->getCalendar()],
-            'isMultiple' => false
-        ]);
+        $form = $this->createForm(
+            CalendarItemType::class,
+            $calendarItem,
+            [
+                'user' => $this->getUser(),
+                'calendars' => [$calendarItem->getCalendar()],
+                'isMultiple' => false
+            ]
+        );
 
 
         $form->handleRequest($request);

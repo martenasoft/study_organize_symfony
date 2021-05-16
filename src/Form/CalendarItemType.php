@@ -31,8 +31,15 @@ class CalendarItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
             ->add('dateRange')
+            ->add(
+                'replaceType',
+                ChoiceType::class,
+                [
+                    'choices' => CalendarItem::getReplaceTypes(),
+                    "required" => false
+                ]
+            )
             ->add(
                 'color',
                 ChoiceType::class,
@@ -63,52 +70,66 @@ class CalendarItemType extends AbstractType
                     'choice_attr' => ['label' => false],
                     'label' => false
                 ]
-            )->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            )->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) use ($options) {
+                    if (isset($options['hide_calendar']) && $options['hide_calendar'] === true) {
+                        return;
+                    }
+                    $form = $event->getForm();
 
-                if (isset($options['hide_calendar']) && $options['hide_calendar'] === true) {
-                    return;
+                    if ($event->getData()->getId() === null) {
+                        $form
+                            ->add(
+                                'calendars',
+                                EntityType::class,
+                                [
+                                    'class' => Calendar::class,
+                                    'choice_label' => 'title',
+                                    'data' => $options['calendars'],
+                                    'required' => false,
+                                    'empty_data' => '',
+                                    'multiple' => $options['isMultiple'],
+                                    'query_builder' => function (CalendarRepository $calendarRepository) use ($options
+                                    ) {
+                                        return $calendarRepository->getItemsByUserQueryBuilder($options['user']);
+                                    }
+                                ]
+                            );
+                    } else {
+                        $form
+                            ->add(
+                                'calendar',
+                                EntityType::class,
+                                [
+                                    'class' => Calendar::class,
+                                    'choice_label' => 'title',
+                                    'required' => false,
+                                    'empty_data' => '',
+                                    'multiple' => false,
+                                    'query_builder' => function (CalendarRepository $calendarRepository) use ($options
+                                    ) {
+                                        return $calendarRepository->getItemsByUserQueryBuilder($options['user']);
+                                    }
+                                ]
+                            );
+                    }
                 }
-                $form = $event->getForm();
+            )->addEventListener(
+                FormEvents::POST_SUBMIT,
+                function (FormEvent $event) {
+                    $data = $event->getData();
+                    $dateRange = $this->dateFormatService->dateTimeRangeToDateObjectArray($data->getDateRange());
 
-                if ($event->getData()->getId() === null ) {
-                    $form
-                        ->add('calendars', EntityType::class, [
-                        'class'=> Calendar::class,
-                        'choice_label' => 'title',
-                        'data' => $options['calendars'],
-                        'required' => false,
-                        'empty_data' => '',
-                        'multiple' => $options['isMultiple'],
-                        'query_builder' => function(CalendarRepository $calendarRepository) use ($options) {
-                            return $calendarRepository->getItemsByUserQueryBuilder($options['user']);
-                        }]);
-                } else {
-                    $form
-                        ->add('calendar', EntityType::class, [
-                            'class'=> Calendar::class,
-                            'choice_label' => 'title',
-                            'required' => false,
-                            'empty_data' => '',
-                            'multiple' => false,
-                            'query_builder' => function(CalendarRepository $calendarRepository) use ($options) {
-                                return $calendarRepository->getItemsByUserQueryBuilder($options['user']);
-                            }]);
+                    if (!empty($dateRange)) {
+                        $data
+                            ->setStart($dateRange['start'])
+                            ->setEnd($dateRange['end']);
+                    } else {
+                        $event->getForm()->get('dateRange')->addError(new FormError('Error Format!'));
+                    }
                 }
-
-            })->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-                $data = $event->getData();
-                $dateRange = $this->dateFormatService->dateTimeRangeToDateObjectArray($data->getDateRange());
-
-                if (!empty($dateRange)) {
-                    $data
-                        ->setStart($dateRange['start'])
-                        ->setEnd($dateRange['end'])
-                    ;
-                } else {
-                    $event->getForm()->get('dateRange')->addError(new FormError('Error Format!'));
-                }
-
-            });
+            );
     }
 
 

@@ -36,15 +36,7 @@ jQuery(function ($) {
         return date._d.getFullYear()+'-'+(mm < 10 ? '0' : '')+ mm+'-'+(dd < 10 ? '0' : '') + dd;
     }
 
-    function showErrorAlert (reason, detail) {
-        var msg='';
-        if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
-        else {
-            //console.log("error uploading file", reason, detail);
-        }
-        $('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+
-            '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
-    }
+
     $('#calendar_color, #calendar_textColor, #calendar_item_color, #calendar_item_textColor').ace_colorpicker();
 
 

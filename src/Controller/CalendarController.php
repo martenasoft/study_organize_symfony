@@ -143,6 +143,7 @@ class CalendarController extends AbstractController
 
         return $this->render('calendar/show.html.twig', [
             'calendar' => $calendar,
+            'calendarItem' => $calendarItem,
             'form' => $calendarItemForm->createView(),
             'id' => $id,
             'calendarId' => $calendar->getId()

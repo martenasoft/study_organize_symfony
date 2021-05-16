@@ -188,5 +188,18 @@ class CalendarItem implements StatusInterface,IconInterface, ColorInterface, Tex
 
         return $this;
     }
+
+    public static function getReplaceTypes(): array
+    {
+        return [
+            'Only selected dates' => self::REPLACE_TYPE_NO,
+            'Daily' => self::REPLACE_TYPE_DAILY,
+            'In one day' => self::REPLACE_TYPE_IN_ONE_DAY,
+            'Work days' => self::REPLACE_TYPE_WORK_DAYS,
+            'Weekend' => self::REPLACE_TYPE_WEEK_END,
+            'Every month' => self::REPLACE_TYPE_IN_ONE_MONTH
+
+        ];
+    }
 }
 

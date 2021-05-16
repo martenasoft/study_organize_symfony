@@ -17,13 +17,16 @@
             <!-- PAGE CONTENT BEGINS -->
             <div class="">
 
-
+                <span class="green middle bolder">Total:  {{ pagination.getTotalItemCount }} &nbsp;</span>
+                <div class="navigation">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
             </div>
             <div class="space"></div>
             <div id="timeline-1">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
-                        {% if timelines is not empty %}
+                        {% if pagination.getTotalItemCount > 0 %}
                             <div class="timeline-container">
                                 <div class="timeline-label">
                                     {% if app.request.query.has('prev') is empty and app.request.query.get('next') is empty %}
@@ -48,36 +51,36 @@
                                         </span>
                                     {% endif %}
                                 </div>
-                                {% for timeline in timelines %}
-                                    {% set background_item = timeline['calendarColor'] is not empty ? 'background-color: '~timeline['calendarColor']~'; border-color: '~timeline['calendarColor']~';' %}
-                                    {% set border_left_color = timeline['calendarColor'] is not empty ? 'border-left: 3px solid '~timeline['calendarColor']~'!important;' %}
-                                    {% set textColor_item = timeline['calendarTextColor'] is not empty ? 'color: '~timeline['calendarTextColor']~';' %}
+                                {% for timeline in pagination %}
+                                    {% set background_item = timeline.calendar.color is not empty ? 'background-color: '~timeline.calendar.color~'; border-color: '~timeline.calendar.color~';' %}
+                                    {% set border_left_color = timeline.calendar.color is not empty ? 'border-left: 3px solid '~timeline.calendar.color~'!important;' %}
+                                    {% set textColor_item = timeline.calendar.textColor is not empty ? 'color: '~timeline.calendar.textColor~';' %}
 
                                     <div class="timeline-items">
                                         <div class="timeline-item clearfix">
                                             <div class="timeline-info">
 <!--                                                <img alt="Susan't Avatar" src="assets/images/avatars/avatar1.png"/>-->
-                                                <span class="label label-info label-sm">{{ timeline['start'] | date('H:i') }}</span>
+                                                <span class="label label-info label-sm">{{ timeline.start | date('H:i') }}</span>
                                             </div>
 
                                             <div class="widget-box transparent collapsed">
                                                 <div class="widget-header widget-header-small" style="{{ background_item ~ textColor_item }}">
                                                     <h5 class="widget-title smaller">
-                                                        <span>{{ timeline['title'] }}</span>
+                                                        <span>{{ timeline.title }}</span>
                                                     </h5>
                                                     <span class="widget-toolbar no-border">
                                                         end:
-                                                        {{ timeline['end'] is not empty ? timeline['end'] | date('d/M')  }}
+                                                        {{ timeline.end is not empty ? timeline.end | date('d/M')  }}
                                                         <i class="ace-icon fa fa-clock-o bigger-110"></i>
-                                                        {{ timeline['end'] is not empty ? timeline['end'] | date('H:i')  }}
+                                                        {{ timeline.end is not empty ? timeline.end | date('H:i')  }}
                                                     </span>
 
 
                                                     <span class="widget-toolbar">
                                                         <a href="#"
-                                                           {% if timeline['tagsCount'] > 0 %}
+                                                           {% if timeline.tagsCount > 0 %}
                                                            onclick="return window.loadTimelineBody('{{ path('checklist_in_timeline_item', {
-                                                               id: timeline['id'],
+                                                               id: timeline.id,
                                                                start: dateStart | date("U"),
                                                                end: dateEnd | date("U")
                                                            }) }} ', this);"
@@ -87,13 +90,13 @@
                                                         </a>
                                                     </span>
                                                     <span class="widget-toolbar no-border">
-                                                         <a href="#" style="{{ textColor_item }}">{{ timeline['calendarTitle'] }}</a>
+                                                         <a href="#" style="{{ textColor_item }}">{{ timeline.calendar.title }}</a>
                                                     </span>
                                                 </div>
 
                                                 <div class="widget-body">
                                                     <div class="widget-main">
-                                                        {{ timeline['about'] }}
+                                                        {{ timeline.about }}
 
                                                         <div class="space-6"></div>
                                                         <div class="checklist-items"></div>
@@ -104,13 +107,13 @@
                                                             </div>
 
                                                             <div class="pull-right action-buttons">
-                                                                <a href="{{ path("timeline_status", {id: timeline['id']}) }}">
+                                                                <a href="{{ path("timeline_status", {id: timeline.id}) }}">
                                                                     <i class="ace-icon fa fa-check green bigger-130"></i>
                                                                 </a>
 
                                                                 <a href="{{ path('calendar_show', {
-                                                                    id: timeline['calendarId'],
-                                                                    item: timeline['id']
+                                                                    id: timeline.calendar.id,
+                                                                    item: timeline.id
                                                                 }) }}">
                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                 </a>
@@ -133,6 +136,9 @@
                 </div>
             </div>
 
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
             <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
     </div><!-- /.row -->

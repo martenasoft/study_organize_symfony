@@ -14,6 +14,7 @@ use App\Repository\CalendarRepository;
 use App\Repository\DailyChecklistRepository;
 use App\Service\EntityValueByIdFactoryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +56,56 @@ class TimelineController extends AbstractController
         $dateStart = new \DateTime('now');
         $dateStart->setTime(0, 0);
         $dateEnd = new \DateTime('now');
+        $dateEnd->modify('+1 day');
+        $dateEnd->setTime(23, 23, 59);
+
+        if ($prev > 1) {
+            $dateStart->modify('-'.($prev - 1) .' day');
+            $dateEnd->modify('-'.($prev - 1) .' day');
+        }
+
+        if ($next > 1) {
+            $dateStart->modify('+'.($next - 1) .' day');
+            $dateEnd->modify('+'.($next - 1) .' day');
+        }
+
+        $timelines = $this
+            ->calendarItemRepository
+            ->getLoadItems(
+                $this->getUser(),
+                null,
+                $dateStart,
+                $dateEnd,
+                function (QueryBuilder $queryBuilder, string $alias) {
+                    $queryBuilder->orderBy("{$alias}.start", "DESC");
+                }
+            )
+          ;
+
+     //   dump($timelines);die;
+
+        return $this->render(
+            'timeline/index.html.twig',
+            [
+                'timelines' => $timelines,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'prev' => $prev,
+                'next' => $next
+            ]
+        );
+    }
+
+
+
+    public function index_(Request $request, PaginatorInterface $paginator): Response
+    {
+        $prev = $request->query->get('prev', 1);
+        $next = $request->query->get('next', 1);
+        //$this->isActiveOnly(false);
+        $dateStart = new \DateTime('now');
+        $dateStart->setTime(0, 0);
+        $dateEnd = new \DateTime('now');
         $dateEnd->setTime(23, 23, 59);
 
         if ($prev > 1) {
@@ -73,20 +124,19 @@ class TimelineController extends AbstractController
 
         $queryBuilder = $this
             ->calendarItemRepository
-            ->getLoadItems(
-                $this->getUser()
+            ->getLoadItemsQueryBuilder(
+                $this->getUser(),
+                null,
+                $dateStart,
+                $dateEnd
+
             )
-            ->andWhere("{$alias}.start<=:dateStart AND {$alias}.end>=:dateEnd")
-            ->setParameter('dateStart', $dateStart)
-            ->setParameter('dateEnd', $dateStart)
             ->orderBy(
                 $this
                     ->calendarItemRepository->getAlias() . '.start',
                 'DESC'
             );
-        $this
-            ->calendarItemRepository
-            ->filterByReplace($queryBuilder);
+
 
         $query = $queryBuilder->getQuery();
 
